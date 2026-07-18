@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memory Archive — First Presbyterian Church</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0806;--paper:#1c1710;--paper2:#221e13;--paper3:#2a2416;
+  --ink:#d4c9a8;--ink-dim:#7a6e54;
+  --gold:#c8a84b;--gold-dim:#6b5a28;--gold-glow:rgba(200,168,75,0.12);
+  --spine:#0f0d08;--border:rgba(200,168,75,0.18);
+  --tab-w:60px;--trans:0.28s ease;
+}
+html,body{width:100%;height:100vh;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;font-family:'IM Fell English',serif;}
+
+/* ── BOOK ── */
+.book{display:flex;width:min(1240px,99vw);height:min(800px,96vh);
+  filter:drop-shadow(0 20px 60px rgba(0,0,0,0.9));}
+
+/* ── TABS ── */
+.tabs{width:var(--tab-w);background:var(--spine);
+  border-right:1px solid rgba(200,168,75,0.1);
+  display:flex;flex-direction:column;align-items:center;
+  padding-top:24px;flex-shrink:0;z-index:10;}
+.tab{writing-mode:vertical-rl;transform:rotate(180deg);
+  background:none;border:none;
+  border-bottom:1px solid rgba(200,168,75,0.08);
+  color:var(--ink-dim);font-family:'Cinzel',serif;font-size:0.6rem;
+  letter-spacing:0.16em;text-transform:uppercase;cursor:pointer;
+  padding:16px 8px;width:100%;transition:color var(--trans),background var(--trans);}
+.tab:hover,.tab.on{color:var(--gold);background:var(--gold-glow);}
+
+/* ── LEFT PAGE ── */
+.page-l{flex:1;background:var(--paper2);border-right:3px solid #060402;
+  display:flex;flex-direction:column;overflow:hidden;position:relative;}
+.page-l::before{content:'';position:absolute;top:0;left:0;width:28px;height:100%;
+  background:linear-gradient(to right,rgba(0,0,0,0.4),transparent);
+  pointer-events:none;z-index:3;}
+.page-l-inner{flex:1;overflow-y:auto;padding:26px 24px 24px 38px;
+  position:relative;z-index:2;}
+.panel{display:none;}.panel.on{display:block;}
+.panel-head{font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.2em;
+  text-transform:uppercase;color:var(--gold-dim);margin-bottom:16px;
+  padding-bottom:7px;border-bottom:1px solid var(--border);}
+
+/* ── BOOKSHELF ── */
+.shelf{background:linear-gradient(to bottom,#110e07,#191208);
+  border:1px solid rgba(200,168,75,0.08);border-radius:3px;
+  padding:18px 12px 14px;min-height:130px;
+  display:flex;align-items:flex-end;gap:5px;
+  margin-bottom:14px;box-shadow:inset 0 -4px 8px rgba(0,0,0,0.6);
+  position:relative;}
+.shelf::after{content:'';position:absolute;bottom:0;left:0;right:0;height:8px;
+  background:linear-gradient(to bottom,#241a08,#140e02);
+  border-top:1px solid rgba(200,168,75,0.12);border-radius:0 0 3px 3px;}
+.bspine{writing-mode:vertical-rl;transform:rotate(180deg);
+  height:100px;width:30px;border-radius:2px 3px 3px 2px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:0.48rem;
+  letter-spacing:0.05em;text-align:center;line-height:1.3;
+  cursor:pointer;flex-shrink:0;box-shadow:1px 0 5px rgba(0,0,0,0.6);
+  transition:transform var(--trans),box-shadow var(--trans);padding:3px;}
+.bspine:hover{transform:translateY(-10px) rotate(180deg);box-shadow:2px 6px 14px rgba(200,168,75,0.18);}
+.bspine.on{transform:translateY(-14px) rotate(180deg);box-shadow:2px 8px 18px rgba(200,168,75,0.28);}
+.ch-panel{animation:slideD .2s ease;}
+@keyframes slideD{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.ch-panel h4{
+  font-family:'Cinzel',serif;font-size:0.72rem;color:var(--gold);
+  margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);
+}
+.book-reader{padding:0;}
+.book-chapter{padding:0 0 24px;}
+.book-chapter+.book-chapter{
+  padding-top:20px;
+  border-top:1px solid rgba(200,168,75,0.08);
+}
+.ch-era{
+  font-family:'Cinzel',serif;font-size:0.5rem;
+  letter-spacing:0.16em;color:var(--gold-dim);
+  text-transform:uppercase;margin-bottom:6px;
+}
+.ch-name{
+  font-family:'Cinzel',serif;font-size:0.78rem;
+  color:var(--ink);margin-bottom:12px;
+}
+.ch-body{
+  font-size:0.76rem;color:var(--ink);
+  line-height:1.85;
+}
+.ch-img{
+  width:100%;margin:12px 0;
+  border:1px solid var(--border);
+  border-radius:2px;display:block;
+  filter:sepia(0.25) brightness(0.9);
+}
+
+/* ── EXHIBITION CABINET ── */
+.cabinet-wrap{
+  display:flex;flex-direction:column;align-items:center;
+  padding:0 0 8px;
+}
+
+/* Outer cabinet shell */
+.cabinet-outer{
+  width:88%;
+  border:1.5px solid rgba(200,168,75,0.45);
+  border-radius:4px;
+  background:linear-gradient(to bottom,#0e0c07,#181208);
+  box-shadow:0 0 0 3px rgba(200,168,75,0.07), inset 0 0 20px rgba(0,0,0,0.5);
+  position:relative;
+  overflow:hidden;
+}
+
+/* Glass panel — the display window */
+.cabinet-glass{
+  margin:12px 10px 0;
+  border:1px solid rgba(200,168,75,0.3);
+  border-radius:3px;
+  background:rgba(200,168,75,0.03);
+  height:110px;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+  overflow:hidden;
+}
+/* Glass reflection */
+.cabinet-glass::after{
+  content:'';
+  position:absolute;top:0;left:0;right:0;height:40%;
+  background:linear-gradient(to bottom,rgba(255,255,255,0.04),transparent);
+  pointer-events:none;
+}
+/* Glass side glints */
+.cabinet-glass::before{
+  content:'';
+  position:absolute;top:4px;left:4px;bottom:4px;width:1px;
+  background:linear-gradient(to bottom,transparent,rgba(255,255,255,0.08),transparent);
+  pointer-events:none;
+}
+
+/* Object inside glass */
+.cab-object-wrap{
+  display:flex;align-items:center;justify-content:center;
+  width:100%;height:100%;padding:8px;
+}
+.cab-object-wrap svg{max-height:88px;width:auto;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.6));}
+
+/* Cabinet base / plinth */
+.cabinet-base{
+  margin:8px 10px 0;
+  border-top:1px solid rgba(200,168,75,0.25);
+  padding:8px 10px 12px;
+}
+
+/* Label tag strip on base */
+.cabinet-label-tag{
+  display:inline-block;
+  border:1px solid;
+  border-radius:2px;
+  padding:2px 10px;
+  font-family:'Cinzel',serif;
+  font-size:0.55rem;
+  letter-spacing:0.12em;
+  margin-bottom:7px;
+}
+.cab-item-name{
+  font-family:'Cinzel',serif;font-size:0.72rem;
+  color:var(--ink);margin-bottom:2px;
+}
+.cab-item-year{
+  font-family:'Cinzel',serif;font-size:0.55rem;
+  letter-spacing:0.12em;color:var(--gold-dim);margin-bottom:5px;
+}
+.cab-item-desc{
+  font-size:0.66rem;color:var(--ink-dim);
+  font-style:italic;line-height:1.5;
+}
+
+/* Cabinet legs */
+.cabinet-legs{
+  display:flex;justify-content:space-between;
+  padding:0 16px;margin-top:2px;width:88%;
+}
+.cab-leg{
+  width:8px;height:10px;
+  background:linear-gradient(to bottom,rgba(200,168,75,0.3),rgba(200,168,75,0.1));
+  border:1px solid rgba(200,168,75,0.2);
+  border-top:none;border-radius:0 0 2px 2px;
+}
+
+/* Navigation arrows */
+.cabinet-nav{
+  display:flex;align-items:center;justify-content:center;
+  gap:16px;margin-top:12px;width:88%;
+}
+.cab-arrow{
+  background:none;border:1px solid var(--gold-dim);border-radius:2px;
+  color:var(--gold);font-size:1rem;padding:3px 12px;
+  cursor:pointer;transition:all var(--trans);font-family:'Cinzel',serif;
+}
+.cab-arrow:hover{background:var(--gold-glow);border-color:var(--gold);}
+.cab-dots{display:flex;gap:5px;align-items:center;}
+.cab-dot{width:4px;height:4px;border-radius:50%;
+  background:var(--gold-dim);transition:background var(--trans);}
+.cab-dot.on{background:var(--gold);}
+
+/* ── MEDIA ── */
+.med-item{background:var(--paper3);border:1px solid var(--border);border-radius:3px;
+  padding:13px;margin-bottom:9px;display:flex;gap:12px;align-items:center;}
+.med-icon{width:36px;height:36px;border-radius:50%;border:1px solid var(--gold-dim);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--gold-dim);font-size:0.9rem;flex-shrink:0;}
+.med-title{font-family:'Cinzel',serif;font-size:0.65rem;color:var(--ink);margin-bottom:3px;}
+.med-desc{font-size:0.68rem;color:var(--ink-dim);font-style:italic;}
+
+/* ── RIGHT PAGE ── */
+.page-r{flex:1.15;background:var(--paper);display:flex;flex-direction:column;
+  overflow:hidden;position:relative;}
+.page-r::before{content:'';position:absolute;top:0;left:0;width:18px;height:100%;
+  background:linear-gradient(to right,rgba(0,0,0,0.28),transparent);
+  pointer-events:none;z-index:3;}
+.page-r-inner{flex:1;display:flex;flex-direction:column;
+  padding:22px 28px;position:relative;z-index:2;}
+.r-title{font-family:'Cinzel Decorative',serif;font-size:0.58rem;letter-spacing:0.28em;
+  color:var(--gold-dim);text-align:center;margin-bottom:4px;}
+.r-sub{font-size:0.65rem;color:var(--ink-dim);font-style:italic;
+  text-align:center;margin-bottom:18px;}
+
+/* ── WINDOW GRID 2×3 ── */
+.win-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  grid-template-rows:repeat(2,1fr);
+  gap:14px 18px;
+  flex:1;min-height:0;
+}
+
+.win-cell{display:flex;flex-direction:column;min-height:0;}
+
+/* ARCH — top portion, just the semicircle header */
+.arch-wrap{position:relative;flex-shrink:0;}
+.arch-svg{width:100%;display:block;}
+.arch-year-wrap{
+  position:absolute;top:0;left:0;right:0;
+  height:100%;
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
+}
+.arch-year-wrap.interactive{pointer-events:all;}
+.year-display{
+  display:flex;flex-direction:column;
+  align-items:center;gap:3px;
+  width:88%;
+  user-select:none;
+}
+.yr-num{
+  font-family:'Cinzel',serif;
+  font-size:clamp(0.65rem,1.2vw,0.9rem);
+  letter-spacing:0.06em;
+  text-align:center;
+  line-height:1;
+}
+/* Slider */
+.yr-slider{
+  -webkit-appearance:none;
+  appearance:none;
+  width:100%;
+  height:3px;
+  border-radius:2px;
+  background:rgba(200,168,75,0.2);
+  outline:none;
+  cursor:pointer;
+}
+.yr-slider::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:12px;height:12px;
+  border-radius:50%;
+  background:var(--c, var(--gold));
+  cursor:pointer;
+  border:none;
+  box-shadow:0 0 5px var(--c, rgba(200,168,75,0.5));
+}
+.yr-slider::-moz-range-thumb{
+  width:12px;height:12px;
+  border-radius:50%;
+  background:var(--c, var(--gold));
+  cursor:pointer;border:none;
+}
+.year-display.locked .yr-slider{display:none;}
+
+/* THUMBNAIL — tall rect that fills the rest of the cell */
+.thumb-panel{
+  flex:1;min-height:0;
+  border:1px solid var(--border);
+  border-top:none;
+  border-radius:0 0 4px 4px;
+  overflow:hidden;
+  cursor:pointer;
+  position:relative;
+  transition:border-color var(--trans),box-shadow var(--trans);
+}
+.thumb-panel:hover{box-shadow:0 0 12px rgba(200,168,75,0.15);}
+.thumb-placeholder{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:5px;padding:8px;
+}
+.thumb-icon{font-size:1rem;opacity:0.2;}
+.thumb-title{
+  font-family:'Cinzel',serif;
+  font-size:clamp(0.42rem,0.8vw,0.58rem);
+  color:var(--ink-dim);text-align:center;line-height:1.4;
+}
+/* Thumbnail with real image */
+.thumb-img-wrap{
+  width:100%;height:100%;
+  position:relative;overflow:hidden;
+}
+.thumb-img-wrap img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  filter:sepia(0.3) brightness(0.85);
+  transition:filter var(--trans),transform var(--trans);
+}
+.thumb-panel:hover .thumb-img-wrap img{
+  filter:sepia(0.1) brightness(1);
+  transform:scale(1.04);
+}
+.thumb-img-label{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:5px 6px 4px;
+  background:linear-gradient(to top,rgba(0,0,0,0.75),transparent);
+  font-family:'Cinzel',serif;
+  font-size:clamp(0.38rem,0.7vw,0.52rem);
+  color:var(--ink);text-align:center;line-height:1.4;
+  pointer-events:none;
+}
+
+/* Footer era label */
+.win-foot{
+  flex-shrink:0;
+  font-family:'Cinzel',serif;font-size:0.44rem;
+  letter-spacing:0.07em;color:var(--ink-dim);
+  text-align:center;margin-top:4px;text-transform:uppercase;
+}
+
+/* ── MEMORY FULLSCREEN ── */
+.mem-overlay{
+  position:fixed;inset:0;
+  background:#000;
+  z-index:300;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity 0.32s;
+}
+.mem-overlay.open{opacity:1;pointer-events:all;}
+
+/* Full-screen image */
+.mem-fullimg{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+.mem-fullimg img{
+  width:100%;height:100%;object-fit:contain;display:block;
+}
+.mem-fullimg-ph{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:14px;color:rgba(255,255,255,0.2);
+  font-style:italic;font-size:0.9rem;
+}
+
+/* Close button — top left */
+.mem-close{
+  position:absolute;top:20px;left:20px;
+  background:rgba(0,0,0,0.55);
+  border:1px solid rgba(255,255,255,0.2);
+  border-radius:3px;
+  color:rgba(255,255,255,0.7);
+  font-family:'Cinzel',serif;
+  font-size:0.75rem;letter-spacing:0.1em;
+  padding:7px 14px;cursor:pointer;
+  z-index:10;
+  transition:all var(--trans);
+  display:flex;align-items:center;gap:6px;
+}
+.mem-close:hover{background:rgba(0,0,0,0.8);color:#fff;border-color:rgba(255,255,255,0.5);}
+
+/* Full-screen video (YouTube embed) */
+.vid-frame-wrap{
+  position:relative;width:min(92vw,1100px);aspect-ratio:16/9;
+  background:#000;box-shadow:0 0 60px rgba(0,0,0,0.6);
+}
+.vid-frame-wrap iframe{
+  position:absolute;inset:0;width:100%;height:100%;border:0;
+}
+
+/* Toast */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+  background:var(--paper3);border:1px solid var(--border);border-radius:3px;
+  padding:8px 18px;font-style:italic;font-size:0.78rem;color:var(--ink);
+  z-index:500;opacity:0;pointer-events:none;transition:opacity .3s;}
+.toast.show{opacity:1;}
+
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--paper);}
+::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:2px;}
+</style>
+</head>
+<body>
+
+<div class="book">
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab on" onclick="switchTab('books',this)">Books</button>
+    <button class="tab"    onclick="switchTab('exhibitions',this)">Exhibition</button>
+    <button class="tab"    onclick="switchTab('media',this)">Media</button>
+  </div>
+
+  <!-- LEFT PAGE -->
+  <div class="page-l">
+    <div class="page-l-inner">
+
+      <!-- BOOKS -->
+      <div class="panel on" id="p-books">
+        <div class="panel-head">The Archive — Books</div>
+        <div class="shelf" id="shelf"></div>
+        <div id="ch-area"></div>
+      </div>
+
+      <!-- EXHIBITIONS -->
+      <div class="panel" id="p-exhibitions">
+        <div class="panel-head">The Archive — Exhibitions</div>
+
+        <!-- Glass display cabinet -->
+        <div class="cabinet-wrap">
+          <div class="cabinet-outer">
+            <!-- Glass window -->
+            <div class="cabinet-glass">
+              <div class="cab-object-wrap" id="cab-object"></div>
+            </div>
+            <!-- Base with label -->
+            <div class="cabinet-base">
+              <div class="cabinet-label-tag" id="cab-tag">—</div>
+              <div class="cab-item-name"  id="cab-name"></div>
+              <div class="cab-item-year"  id="cab-year"></div>
+              <div class="cab-item-desc"  id="cab-desc"></div>
+            </div>
+          </div>
+          <!-- Legs -->
+          <div class="cabinet-legs">
+            <div class="cab-leg"></div><div class="cab-leg"></div>
+            <div class="cab-leg"></div><div class="cab-leg"></div>
+          </div>
+          <!-- Nav -->
+          <div class="cabinet-nav">
+            <button class="cab-arrow" onclick="cabNav(-1)">‹</button>
+            <div class="cab-dots" id="cab-dots"></div>
+            <button class="cab-arrow" onclick="cabNav(1)">›</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- MEDIA -->
+      <div class="panel" id="p-media">
+        <div class="panel-head">The Archive — Media</div>
+        <div id="med-list"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RIGHT PAGE -->
+  <div class="page-r">
+    <div class="page-r-inner">
+      <div class="r-title">Memory Archive</div>
+      <div class="r-sub">First Presbyterian Church · South Chicago · Est. 1833</div>
+      <div class="win-grid" id="win-grid"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MEMORY FULLSCREEN OVERLAY -->
+<div class="mem-overlay" id="mem-overlay" onclick="bgClose(event)">
+  <div class="mem-fullimg" id="mem-fullimg">
+    <div class="mem-fullimg-ph" id="mem-fullimg-ph">
+      <span style="font-size:3rem;opacity:0.15">✦</span>
+      <span>Illustration — drop image here</span>
+    </div>
+  </div>
+  <button class="mem-close" onclick="closeMem()">✕ &nbsp;Close</button>
+</div>
+
+<!-- VIDEO FULLSCREEN OVERLAY -->
+<div class="mem-overlay" id="vid-overlay" onclick="bgCloseVideo(event)">
+  <div class="vid-frame-wrap" id="vid-frame-wrap"></div>
+  <button class="mem-close" onclick="closeVideo()">✕ &nbsp;Close</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════ DATA ═══════════════════════════
+
+const WINDOWS = [
+  { id:'w1', correctYear:1833, color:'#b8860b',
+
+    illustBg:'linear-gradient(135deg,#120e06,#221806)',
+    imgSrc: 'images/1833_fort_dearborn.jpg.png'
+  },
+  { id:'w2', correctYear:1833, color:'#a0780a',
+
+    illustBg:'linear-gradient(135deg,#100c05,#1e1606)',
+    imgSrc: 'images/1833_infants_school.jpg'
+  },
+  { id:'w3', correctYear:1857, color:'#2e8b9a',
+
+    illustBg:'linear-gradient(135deg,#06121a,#0c1e28)',
+    imgSrc: ''
+  },
+  { id:'w4', correctYear:1871, color:'#9a4a1a',
+
+    illustBg:'linear-gradient(135deg,#180804,#2a1008)',
+    imgSrc: 'images/1871_fire.jpg'
+  },
+  { id:'w5', correctYear:1893, color:'#7b3fa0',
+
+    illustBg:'linear-gradient(135deg,#0d0814,#1a1028)',
+    imgSrc: 'images/1893_parliament.png'
+  },
+  { id:'w6', correctYear:1965, color:'#9a2e2e',
+
+    illustBg:'linear-gradient(135deg,#100408,#200810)',
+    imgSrc: 'images/1965_bsr.jpg'
+
+  },
+];
+
+const EXHIBITIONS = [
+  { era:'1833', color:'#b8860b', name:'Founding Documents',
+    year:'June 26, 1833',
+    desc:'Original land deed and congregation charter, signed by 26 founding members in the carpentry shop of the second Fort Dearborn.',
+    shape:'scroll' },
+  { era:'1833', color:'#a0780a', name:"Eliza Chappel's Infants School",
+    year:'September 1833',
+    desc:'Sketch of the schoolhouse on S. Water St. Twenty pupils from small children to age 12 — sharing one table, bringing their own chairs.',
+    shape:'house' },
+  { era:'1857', color:'#2e8b9a', name:'The Railroad Chapel',
+    year:'1857',
+    desc:'Converted train cars. Fifteen students on opening day — "American, Irish, German, and colored boys." The first integrated school in the region.',
+    shape:'train' },
+  { era:'1871', color:'#9a4a1a', name:'Great Fire Survivors',
+    year:'October 1871',
+    desc:'The only objects saved from the Marble Church fire: the official records, the communion service, and the library.',
+    shape:'flame' },
+  { era:'1893', color:'#7b3fa0', name:"World's Parliament of Religions",
+    year:'September 1893',
+    desc:'Hall of Columbus. 4,000 gathered. When Swami Vivekananda said "Sisters and Brothers of America," the hall rose for minutes.',
+    shape:'dome' },
+  { era:'1965', color:'#9a2e2e', name:'Opportunity Please Knock',
+    year:'1967',
+    desc:'A musical review created with the Blackstone Rangers, first performed at First Church. 8,000 attendees over six weeks.',
+    shape:'music' },
+];
+
+const BOOKS = [
+  { id:'b1', title:'History of South Chicago', year:'1890',
+    bg:'#3a2c10', fg:'#c8a84b',
+    chapters:[
+      {id:'bc1',title:'The Early Settlement',era:'1833',
+       img:'images/1833_fort_dearborn.jpg.png',
+       preview:'In 1833, first settlers arrived along the lakeshore — the church was the first permanent structure.'},
+      {id:'bc2',title:'Steel and Smoke',era:'1857',
+       preview:'By the 1850s, the congregation had become a station on the Underground Railroad.'},
+      {id:'bc3',title:'The Parliament',era:'1893',
+       img:'images/1893_parliament.png',
+       preview:"First's sixth pastor organized the first Parliament of the World's Religions."},
+    ]
+  },
+  { id:'b2', title:'Renewal of a Symbol', year:'1995',
+    bg:'#1e2a1e', fg:'#6aaa6a',
+    chapters:[
+      {id:'bc4',title:'The Blackstone Rangers',era:'1965',
+       img:'images/1965_bsr.jpg',
+       preview:'The church saw an organized source of Black power for the South Side.'},
+      {id:'bc5',title:'The Building',era:'1928',
+       preview:'The 120-foot English Gothic tower — four archangels at the corners.'},
+    ]
+  },
+  { id:'b3', title:'Sacred Spaces', year:'1952',
+    bg:'#1a1a2e', fg:'#8888cc',
+    chapters:[
+      {id:'bc6',title:'Stones from the World',era:'1928',
+       img:'images/1833_infants_school.jpg',
+       preview:'The chapel floor holds a stone from the Basilica of Saint Peter, Vatican City.'},
+    ]
+  },
+  { id:'b4', title:'A History of Conscience', year:'1985',
+    bg:'#2a1810', fg:'#c07840',
+    chapters:[
+      {id:'bc7',title:'The Frontier Church',era:'1833',
+       preview:'Twenty-five Congregationalists and one Presbyterian gathered in a carpentry shop at Fort Dearborn — two months before Chicago itself was incorporated.'},
+      {id:'bc8',title:'Fire and Renewal',era:'1871',
+       img:'images/1871_fire.jpg',
+       preview:'The Great Chicago Fire left the church in ashes; Pastor Arthur Mitchell rebuilt on 21st Street as the congregation pressed further south.'},
+      {id:'bc9',title:'The Move to Woodlawn',era:'1926',
+       preview:'A merger raised a new Gothic cathedral at 64th and Kimbark — membership swelled past 2,200, even as the neighborhood resisted integration.'},
+      {id:'bc10',title:'Six Months, Longer',era:'1953',
+       preview:"Elders asked Pastor Bowman to delay Black membership — he refused, and the Session voted instead to stay and invest in Woodlawn's future."},
+      {id:'bc11',title:'Buck and Chuck',era:'1956',
+       preview:'Co-pastors Blakely and Leber brought organizer Saul Alinsky into the sanctuary, turning it into a staging ground against disinvestment.'},
+      {id:'bc12',title:'Guns in the Vestry',era:'1967',
+       preview:"The Blackstone Rangers surrendered a hundred weapons to the church safe — a 2,500-page Presbytery report later cleared Pastor Fry of every charge against him."},
+      {id:'bc13',title:'New Roots',era:'1981',
+       preview:"Amid arson and abandonment, the congregation planted a garden and raised a solar greenhouse on Woodlawn's burned lots."},
+    ]
+  },
+];
+
+const MEDIA = [
+  {title:'Oral History — Mrs. E. Pulaski (1961)',
+   desc:'35-min reel-to-reel, South Chicago Historical Society. [Digitization pending]'},
+  {title:'16mm Film — Church Centennial (1933)',
+   desc:'Silent film ~8 min. Exterior procession and interior gathering. [Preservation required]'},
+  {title:'Opportunity Please Knock Chorus',
+   desc:'Oscar Brown Jr. & Blackstone Rangers collaboration, 1967.',
+   yt:'https://www.youtube.com/watch?v=zBmmj_NFP1k&list=RDzBmmj_NFP1k&start_radio=1'},
+];
+
+// ═══════════════════════════ STATE ═══════════════════════════
+// Shuffle helper
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+const WS = shuffle(WINDOWS.map(w => ({
+  ...w,
+  currentYear: w.correctYear + (Math.random()>0.5?1:-1)*(Math.ceil(Math.random()*35)+5),
+  locked: false,
+}))).map((w,i)=>({...w, gridPos:i}));
+WS.forEach(w=>{ if(w.currentYear===w.correctYear) w.currentYear+=11; });
+
+let openBook=null, cabIdx=0;
+const notebook=[];
+
+// ═══════════════════════════ INIT ═══════════════════════════
+window.addEventListener('DOMContentLoaded',()=>{
+  renderShelf(); renderMedia(); renderWindows();
+  renderCabinet(0);
+});
+
+// ═══════════════════════════ TABS ═══════════════════════════
+function switchTab(id,btn){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('p-'+id).classList.add('on');
+}
+
+// ═══════════════════════════ BOOKS ═══════════════════════════
+function renderShelf(){
+  const s=document.getElementById('shelf'); s.innerHTML='';
+  BOOKS.forEach(b=>{
+    const sp=document.createElement('div');
+    sp.className='bspine'+(openBook===b.id?' on':'');
+    sp.style.background=`linear-gradient(to right,${b.bg}cc,${b.bg}ff,${b.bg}cc)`;
+    sp.style.color=b.fg;
+    sp.innerHTML=`<span>${b.title}<br><small style="opacity:.55;font-size:.42rem">${b.year}</small></span>`;
+    sp.onclick=()=>toggleBook(b.id);
+    s.appendChild(sp);
+  });
+}
+function toggleBook(id){
+  const area=document.getElementById('ch-area');
+  if(openBook===id){area.innerHTML='';openBook=null;renderShelf();return;}
+  openBook=id; renderShelf();
+  const book=BOOKS.find(b=>b.id===id);
+  const panel=document.createElement('div'); panel.className='ch-panel';
+  panel.innerHTML=`<h4>${book.title} <span style="color:var(--ink-dim);font-size:.78em">(${book.year})</span></h4>`;
+  const reader=document.createElement('div'); reader.className='book-reader';
+  book.chapters.forEach(ch=>{
+    const sec=document.createElement('div'); sec.className='book-chapter';
+    sec.innerHTML=`<div class="ch-era">${ch.era}</div>
+      <div class="ch-name">${ch.title}</div>
+      ${ch.img?`<img class="ch-img" src="${ch.img}" alt="">`:''}
+      <div class="ch-body">${ch.preview}</div>`;
+    reader.appendChild(sec);
+  });
+  panel.appendChild(reader);
+  area.innerHTML='';area.appendChild(panel);
+}
+
+// ═══════════════ EXHIBITION CABINET ═══════════════════════
+// Geometric shapes per exhibit type (SVG strings)
+function makeShape(type, color){
+  const c=color, cl=color+'55', cg=color+'22';
+  const shapes={
+    scroll:`<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+      <rect x="14" y="10" width="52" height="62" rx="3" fill="${cg}" stroke="${c}" stroke-width="1.5"/>
+      <rect x="14" y="10" width="52" height="8" rx="3" fill="${cl}"/>
+      <rect x="14" y="62" width="52" height="8" rx="0 0 3 3" fill="${cl}"/>
+      <line x1="24" y1="26" x2="56" y2="26" stroke="${c}" stroke-width="1" stroke-opacity=".6"/>
+      <line x1="24" y1="34" x2="56" y2="34" stroke="${c}" stroke-width="1" stroke-opacity=".6"/>
+      <line x1="24" y1="42" x2="44" y2="42" stroke="${c}" stroke-width="1" stroke-opacity=".6"/>
+      <circle cx="14" cy="14" r="6" fill="${cl}" stroke="${c}" stroke-width="1.5"/>
+      <circle cx="66" cy="14" r="6" fill="${cl}" stroke="${c}" stroke-width="1.5"/>
+      <circle cx="14" cy="66" r="6" fill="${cl}" stroke="${c}" stroke-width="1.5"/>
+      <circle cx="66" cy="66" r="6" fill="${cl}" stroke="${c}" stroke-width="1.5"/>
+    </svg>`,
+    house:`<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="40,8 70,34 70,72 10,72 10,34" fill="${cg}" stroke="${c}" stroke-width="1.5" stroke-linejoin="round"/>
+      <polygon points="40,8 72,36 8,36" fill="${cl}" stroke="${c}" stroke-width="1"/>
+      <rect x="28" y="48" width="10" height="24" fill="${cl}" stroke="${c}" stroke-width="1"/>
+      <rect x="42" y="48" width="14" height="14" fill="${cl}" stroke="${c}" stroke-width="1"/>
+      <line x1="40" y1="8" x2="40" y2="2" stroke="${c}" stroke-width="1.5"/>
+      <circle cx="40" cy="2" r="2" fill="${c}"/>
+    </svg>`,
+    train:`<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+      <rect x="6" y="24" width="68" height="36" rx="4" fill="${cg}" stroke="${c}" stroke-width="1.5"/>
+      <rect x="6" y="24" width="68" height="10" rx="4 4 0 0" fill="${cl}"/>
+      <line x1="30" y1="24" x2="30" y2="60" stroke="${c}" stroke-width="1" stroke-opacity=".5"/>
+      <line x1="50" y1="24" x2="50" y2="60" stroke="${c}" stroke-width="1" stroke-opacity=".5"/>
+      <rect x="12" y="30" width="14" height="10" rx="1" fill="${cl}" stroke="${c}" stroke-width="1"/>
+      <rect x="33" y="30" width="14" height="10" rx="1" fill="${cl}" stroke="${c}" stroke-width="1"/>
+      <rect x="54" y="30" width="14" height="10" rx="1" fill="${cl}" stroke="${c}" stroke-width="1"/>
+      <circle cx="18" cy="64" r="6" fill="${cg}" stroke="${c}" stroke-width="1.5"/>
+      <circle cx="40" cy="64" r="6" fill="${cg}" stroke="${c}" stroke-width="1.5"/>
+      <circle cx="62" cy="64" r="6" fill="${cg}" stroke="${c}" stroke-width="1.5"/>
+      <line x1="2" y1="60" x2="78" y2="60" stroke="${c}" stroke-width="1.5" stroke-opacity=".4"/>
+    </svg>`,
+    flame:`<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+      <path d="M40 72 C20 72 10 58 14 44 C16 36 22 30 22 22 C28 32 26 40 32 38 C28 28 34 16 40 8 C42 20 48 26 46 36 C52 30 50 20 54 14 C60 24 66 36 62 50 C58 64 50 72 40 72Z"
+        fill="${cg}" stroke="${c}" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M40 66 C28 66 24 56 26 48 C30 40 36 38 36 32 C40 40 38 48 42 46 C40 38 44 30 48 24 C52 34 54 46 48 56 C46 62 43 66 40 66Z"
+        fill="${cl}" stroke="${c}" stroke-width="1" stroke-linejoin="round"/>
+    </svg>`,
+    dome:`<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+      <path d="M8 50 Q8 14 40 10 Q72 14 72 50 Z" fill="${cg}" stroke="${c}" stroke-width="1.5"/>
+      <rect x="4" y="50" width="72" height="8" rx="0" fill="${cl}" stroke="${c}" stroke-width="1"/>
+      <rect x="14" y="58" width="52" height="14" fill="${cg}" stroke="${c}" stroke-width="1"/>
+      <line x1="40" y1="10" x2="40" y2="50" stroke="${c}" stroke-width="1" stroke-opacity=".4"/>
+      <line x1="20" y1="15" x2="20" y2="50" stroke="${c}" stroke-width="1" stroke-opacity=".3"/>
+      <line x1="60" y1="15" x2="60" y2="50" stroke="${c}" stroke-width="1" stroke-opacity=".3"/>
+      <circle cx="40" cy="10" r="3" fill="${c}" fill-opacity=".7"/>
+    </svg>`,
+    music:`<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="22" cy="62" rx="12" ry="8" fill="${cl}" stroke="${c}" stroke-width="1.5"/>
+      <ellipse cx="58" cy="56" rx="12" ry="8" fill="${cl}" stroke="${c}" stroke-width="1.5"/>
+      <line x1="34" y1="62" x2="34" y2="18" stroke="${c}" stroke-width="2"/>
+      <line x1="70" y1="56" x2="70" y2="12" stroke="${c}" stroke-width="2"/>
+      <line x1="34" y1="18" x2="70" y2="12" stroke="${c}" stroke-width="1.5"/>
+      <line x1="34" y1="28" x2="70" y2="22" stroke="${c}" stroke-width="1" stroke-opacity=".5"/>
+      <line x1="34" y1="38" x2="70" y2="32" stroke="${c}" stroke-width="1" stroke-opacity=".5"/>
+    </svg>`,
+  };
+  return shapes[type]||shapes.scroll;
+}
+
+function renderCabinet(idx){
+  cabIdx=((idx%EXHIBITIONS.length)+EXHIBITIONS.length)%EXHIBITIONS.length;
+  const ex=EXHIBITIONS[cabIdx];
+  // Label tag
+  const tag=document.getElementById('cab-tag');
+  tag.textContent=ex.era;
+  tag.style.borderColor=ex.color;
+  tag.style.color=ex.color;
+  // Object in glass
+  document.getElementById('cab-object').innerHTML=makeShape(ex.shape,ex.color);
+  // Base info
+  const nm=document.getElementById('cab-name');
+  nm.textContent=ex.name; nm.style.color=ex.color;
+  document.getElementById('cab-year').textContent=ex.year;
+  document.getElementById('cab-desc').textContent=ex.desc;
+  // Dots
+  const dots=document.getElementById('cab-dots'); dots.innerHTML='';
+  EXHIBITIONS.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='cab-dot'+(i===cabIdx?' on':'');
+    if(i===cabIdx) d.style.background=ex.color;
+    dots.appendChild(d);
+  });
+}
+function cabNav(dir){ renderCabinet(cabIdx+dir); }
+
+// ═══════════════════════════ MEDIA ═══════════════════════════
+function renderMedia(){
+  const list=document.getElementById('med-list');
+  MEDIA.forEach(m=>{
+    const item=document.createElement('div'); item.className='med-item';
+    if(m.yt){
+      item.style.cursor='pointer';
+      item.onclick=()=>openVideo(m.yt);
+    }
+    item.innerHTML=`<div class="med-icon">▶</div><div><div class="med-title">${m.title}</div><div class="med-desc">${m.desc}</div></div>`;
+    list.appendChild(item);
+  });
+}
+
+// ═══════════════════════════ WINDOWS ═════════════════════════
+function renderWindows(){
+  const grid=document.getElementById('win-grid'); grid.innerHTML='';
+  WS.forEach((w,i)=>grid.appendChild(makeWinCell(w,i)));
+}
+
+function makeWinCell(w,idx){
+  const cell=document.createElement('div'); cell.className='win-cell';
+
+  // ── Arch SVG (only the semicircle header part) ──
+  const archWrap=document.createElement('div'); archWrap.className='arch-wrap';
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('viewBox','0 0 120 56');
+  svg.classList.add('arch-svg');
+
+  // Arch shape: comes straight down on sides, arch on top
+  const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+  path.setAttribute('d','M4 56 L4 30 Q4 4 60 4 Q116 4 116 30 L116 56 Z');
+  path.setAttribute('fill', w.locked ? w.color+'28' : w.color+'14');
+  path.setAttribute('stroke', w.color);
+  path.setAttribute('stroke-width','1.8');
+  path.setAttribute('stroke-opacity', w.locked ? '1' : '0.5');
+  svg.appendChild(path);
+
+  // Decorative lead lines
+  const mkL=(x1,y1,x2,y2)=>{
+    const l=document.createElementNS('http://www.w3.org/2000/svg','line');
+    l.setAttribute('x1',x1);l.setAttribute('y1',y1);
+    l.setAttribute('x2',x2);l.setAttribute('y2',y2);
+    l.setAttribute('stroke',w.color);l.setAttribute('stroke-width','1');
+    l.setAttribute('stroke-opacity','0.25');svg.appendChild(l);
+  };
+  mkL(4,36,116,36); mkL(60,4,60,56);
+
+  // ✓ when locked
+  if(w.locked){
+    const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x','104');t.setAttribute('y','15');
+    t.setAttribute('font-size','9');t.setAttribute('fill',w.color);
+    t.setAttribute('fill-opacity','0.9');t.textContent='✓';
+    svg.appendChild(t);
+  }
+  archWrap.appendChild(svg);
+
+  // Year dial overlay on arch
+  const yw=document.createElement('div');
+  yw.className='arch-year-wrap'+(w.locked?'':' interactive');
+  const yd=document.createElement('div');
+  yd.className='year-display'+(w.locked?' locked':'');
+  yd.style.color=w.color;
+  if(w.locked){
+    yd.innerHTML=`<span class="yr-num">${w.currentYear} ✦</span>`;
+  } else {
+    yd.innerHTML=`
+      <span class="yr-num" id="yr-${w.id}">${w.currentYear}</span>
+      <input class="yr-slider" type="range"
+        id="sl-${w.id}"
+        min="1820" max="2030" value="${w.currentYear}"
+        style="--c:${w.color}"
+        oninput="previewY(event,${idx})"
+        onchange="commitY(event,${idx})"
+        onclick="event.stopPropagation()">`;
+  }
+  yw.appendChild(yd); archWrap.appendChild(yw);
+  cell.appendChild(archWrap);
+
+  // ── Thumbnail (no footer — thumb fills all remaining space) ──
+  const thumb=document.createElement('div'); thumb.className='thumb-panel';
+  thumb.style.borderColor=w.locked?w.color+'70':'rgba(200,168,75,0.18)';
+  thumb.style.boxShadow=w.locked?`0 0 10px ${w.color}22`:'none';
+
+  if(w.imgSrc){
+    const wrap=document.createElement('div'); wrap.className='thumb-img-wrap';
+    wrap.style.background=w.illustBg;
+    wrap.innerHTML=`<img src="${w.imgSrc}" alt=""
+      onerror="this.parentElement.innerHTML='<div class=\\'thumb-placeholder\\'><div class=\\'thumb-icon\\'>✦</div></div>'">
+      <div class="thumb-img-label"></div>`;
+    thumb.appendChild(wrap);
+  } else {
+    const ph=document.createElement('div'); ph.className='thumb-placeholder';
+    ph.style.background=w.illustBg;
+    ph.innerHTML=`<div class="thumb-icon">✦</div>`;
+    thumb.appendChild(ph);
+  }
+  thumb.onclick=e=>{e.stopPropagation();openMem(w);};
+  cell.appendChild(thumb);
+
+  return cell;
+}
+
+// ═══════════════════════ YEAR SLIDER ═════════════════════════
+// oninput: just update the number display while dragging
+function previewY(e,idx){
+  e.stopPropagation();
+  const w=WS[idx]; if(w.locked)return;
+  const val=parseInt(e.target.value);
+  const el=document.getElementById('yr-'+w.id);
+  if(el)el.textContent=val;
+}
+// onchange: fires on mouse/touch release — lock if correct
+function commitY(e,idx){
+  e.stopPropagation();
+  const w=WS[idx]; if(w.locked)return;
+  const val=parseInt(e.target.value);
+  w.currentYear=val;
+  if(val===w.correctYear){
+    w.locked=true;
+    showToast(`✦ ${w.correctYear} — memory fragment confirmed`);
+    renderWindows();
+  }
+}
+
+// ═══════════════════════ MEMORY FULLSCREEN ════════════════════
+function openMem(w){
+  const fi=document.getElementById('mem-fullimg');
+  if(!w.imgSrc){
+    fi.innerHTML=`<div class="mem-fullimg-ph"><span style="font-size:3rem;opacity:0.15">✦</span><span><em style="font-size:0.8em;opacity:0.6">Image not yet available</em></span></div>`;
+  } else {
+    fi.innerHTML=`<img src="${w.imgSrc}" style="width:100%;height:100%;object-fit:contain;"
+      onerror="this.outerHTML='<div class=\\'mem-fullimg-ph\\'><span style=\\'font-size:3rem;opacity:0.15\\'>✦</span><span><em style=\\'font-size:0.8em;opacity:0.6\\'>Image could not be loaded</em></span></div>'">`;
+  }
+  document.getElementById('mem-overlay').classList.add('open');
+}
+function closeMem(){document.getElementById('mem-overlay').classList.remove('open');}
+function bgClose(e){
+  // Only close if clicking the overlay itself (not the image or close btn)
+  if(e.target===document.getElementById('mem-overlay'))closeMem();
+}
+
+// ═══════════════════════ VIDEO FULLSCREEN ═════════════════════
+// Accepts a bare video ID or any common YouTube URL form (watch?v=, youtu.be/, embed/, shorts/)
+function extractYouTubeId(input){
+  if(/^[\w-]{11}$/.test(input)) return input;
+  const m=input.match(/(?:v=|\/embed\/|\/shorts\/|youtu\.be\/)([\w-]{11})/);
+  return m ? m[1] : input;
+}
+function openVideo(ytIdOrUrl){
+  const id=extractYouTubeId(ytIdOrUrl);
+  const wrap=document.getElementById('vid-frame-wrap');
+  wrap.innerHTML=`<iframe src="https://www.youtube.com/embed/${id}?rel=0"
+    title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen></iframe>`;
+  document.getElementById('vid-overlay').classList.add('open');
+}
+function closeVideo(){
+  document.getElementById('vid-overlay').classList.remove('open');
+  document.getElementById('vid-frame-wrap').innerHTML=''; // stop playback
+}
+function bgCloseVideo(e){
+  if(e.target===document.getElementById('vid-overlay'))closeVideo();
+}
+
+// ═══════════════════════ TOAST ════════════════════════════════
+let _tt;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),3000);
+}
+</script>
+</body>
+</html>

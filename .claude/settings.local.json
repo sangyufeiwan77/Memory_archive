@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -sI http://localhost:8843/memory_archive_v3.html)",
+      "WebFetch(domain:www.chicagofirstchurch.org)"
+    ]
+  }
+}
