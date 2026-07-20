@@ -41,9 +41,25 @@ html,body{width:100%;height:100vh;background:var(--bg);
 .page-l::before{content:'';position:absolute;top:0;left:0;width:28px;height:100%;
   background:linear-gradient(to right,rgba(0,0,0,0.4),transparent);
   pointer-events:none;z-index:3;}
+.page-l.expanded{
+  position:fixed;inset:0;z-index:250;
+  border-right:none;
+}
 .page-l-inner{flex:1;overflow-y:auto;padding:26px 24px 24px 38px;
   position:relative;z-index:2;}
+.page-l.expanded .page-l-inner{
+  max-width:760px;margin:0 auto;padding:48px 32px 40px;
+}
 .panel{display:none;}.panel.on{display:block;}
+.fs-toggle{
+  position:absolute;top:14px;right:14px;z-index:4;
+  background:rgba(0,0,0,0.3);border:1px solid var(--gold-dim);border-radius:2px;
+  color:var(--gold);font-family:'Cinzel',serif;font-size:0.85rem;
+  width:30px;height:30px;line-height:1;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all var(--trans);
+}
+.fs-toggle:hover{background:var(--gold-glow);border-color:var(--gold);}
 .panel-head{font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.2em;
   text-transform:uppercase;color:var(--gold-dim);margin-bottom:16px;
   padding-bottom:7px;border-bottom:1px solid var(--border);}
@@ -71,7 +87,12 @@ html,body{width:100%;height:100vh;background:var(--bg);
 @keyframes slideD{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
 .ch-panel h4{
   font-family:'Cinzel',serif;font-size:0.72rem;color:var(--gold);
-  margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);
+  margin-bottom:4px;padding-bottom:0;border-bottom:none;
+}
+.book-source{
+  font-size:0.6rem;color:var(--ink-dim);font-style:italic;
+  margin:0 0 16px;padding-bottom:8px;line-height:1.5;
+  border-bottom:1px solid var(--border);
 }
 .book-reader{padding:0;}
 .book-chapter{padding:0 0 24px;}
@@ -92,11 +113,23 @@ html,body{width:100%;height:100vh;background:var(--bg);
   font-size:0.76rem;color:var(--ink);
   line-height:1.85;
 }
+.ch-body p{margin-bottom:14px;}
+.ch-body p:last-child{margin-bottom:0;}
 .ch-img{
   width:100%;margin:12px 0;
   border:1px solid var(--border);
   border-radius:2px;display:block;
   filter:sepia(0.25) brightness(0.9);
+}
+.ch-gallery{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+  gap:8px;margin:12px 0;
+}
+.ch-gallery .ch-img{margin:0;}
+.ch-gallery figure{margin:0;}
+.ch-gallery figcaption{
+  font-size:0.58rem;color:var(--ink-dim);font-style:italic;
+  margin-top:3px;text-align:center;
 }
 
 /* ── EXHIBITION CABINET ── */
@@ -425,7 +458,8 @@ html,body{width:100%;height:100vh;background:var(--bg);
   </div>
 
   <!-- LEFT PAGE -->
-  <div class="page-l">
+  <div class="page-l" id="page-l">
+    <button class="fs-toggle" id="fs-toggle" onclick="toggleFullscreen()" title="Expand to fullscreen">⛶</button>
     <div class="page-l-inner">
 
       <!-- BOOKS -->
@@ -572,64 +606,108 @@ const EXHIBITIONS = [
 ];
 
 const BOOKS = [
-  { id:'b1', title:'History of South Chicago', year:'1890',
-    bg:'#3a2c10', fg:'#c8a84b',
-    chapters:[
-      {id:'bc1',title:'The Early Settlement',era:'1833',
-       img:'images/1833_fort_dearborn.jpg.png',
-       preview:'In 1833, first settlers arrived along the lakeshore — the church was the first permanent structure.'},
-      {id:'bc2',title:'Steel and Smoke',era:'1857',
-       preview:'By the 1850s, the congregation had become a station on the Underground Railroad.'},
-      {id:'bc3',title:'The Parliament',era:'1893',
-       img:'images/1893_parliament.png',
-       preview:"First's sixth pastor organized the first Parliament of the World's Religions."},
-    ]
-  },
   { id:'b2', title:'Renewal of a Symbol', year:'1995',
     bg:'#1e2a1e', fg:'#6aaa6a',
+    source:'Source: First Presbyterian Church of Chicago &amp; Fourth Presbyterian Church of Chicago, <em>Renewal of a Symbol: Of Caring and Commitment in Its Community</em> (Chicago, 1995), printed booklet.',
     chapters:[
-      {id:'bc4',title:'The Blackstone Rangers',era:'1965',
-       img:'images/1965_bsr.jpg',
-       preview:'The church saw an organized source of Black power for the South Side.'},
+      {id:'bc13',title:'The Carpentry Shop',era:'1833',
+       img:'images/renewal/fort_dearborn_carpentry_shop.png',
+       preview:`<p>First Presbyterian, Chicago's first chartered church, was built on the ashes of the Blackhawk uprising, rose from the ruin of the Great Chicago Fire, and today stands tall as a beacon to its community.</p>
+<p>The First Presbyterian Church of Chicago laid its foundation on June 26, 1833, in the carpentry shop of the second Fort Dearborn on the south bank of the Chicago River. There, the Rev. Jeremiah Porter, a young Congregationalist from Philadelphia, led 26 parishioners banded together as standard-bearers of faith in the rough-hewn young village. Only the garrison and a few hastily assembled log cabins separated the town from the wilderness, and prairie wolves wandered where no streets had yet been laid.</p>
+<p>"You perceive we have many things to encourage us to go forward in the good work of the Lord: We have also many to render sick the heart," Porter wrote to a friend. "The Sabbath by multitudes is most shamefully abused; twenty stores and groceries are dealing out liquid death, while there but two real temperance stores in the place and those kept by members of my church. In addition to these evils profaneness prevails to an extent such as I never witnessed before. The teams from the Wabash that visit us daily, seem to come loaded with cursing and bitterness. The drivers appear almost as degraded as the miserable heathen around us. But profaneness does not stop with them. Many who call themselves gentlemen and move in the highest arch of society are embellishing, or polluting, almost every sentence they utter with some oath or curse. My soul is sick hearing them as they pass the streets."</p>
+<p style="font-size:0.85em;opacity:0.7"><em>"The church held its first worship services in the carpentry shop of the second Fort Dearborn, on the banks of the Chicago River. Members included soldiers from the garrison and early settlers of the emerging community."</em> — <em>Renewal of a Symbol</em>, p. 1</p>`},
+      {id:'bc14',title:'Seven Locations, One Name',era:'1833–1928',
+       img:'images/FPC_locations.png',
+       preview:`<p>The First Presbyterian Church has had seven different locations, but always the same name. The church was founded on June 26, 1833 in Fort Dearborn ①. It dedicated its first small frame church on Clark and Lake ② in January 1834. This building was moved in 1837 to Clark and Washington ③ and doubled in length. In 1840 ④ it doubled in width. A new "Brick Church" ⑤ was built at the same location and dedicated in 1849. It was sold in 1857, and the proceeds were used to help start three new Presbyterian churches, including the new "Marble Church" ⑥ dedicated in 1857.</p>
+<p>Located on Wabash and Congress, it was destroyed by the Chicago Fire in 1871. Early in 1872 the congregation united with Calvary Presbyterian, which had just begun construction of a new building on Indiana Avenue and 21st Street. ⑦ The structure was dedicated in 1873. The church merged with 41st Street Presbyterian ⑧ on 41st and Grand Boulevard in 1913. Finally, in 1926, First Presbyterian merged with Woodlawn Presbyterian. The present building ⑨ was dedicated in 1928.</p>
+<p style="font-size:0.85em;opacity:0.7"><em>Renewal of a Symbol: Of Caring and Commitment in Its Community</em> (1995), p. 4.</p>`},
       {id:'bc5',title:'The Building',era:'1928',
        preview:'The 120-foot English Gothic tower — four archangels at the corners.'},
     ]
   },
-  { id:'b3', title:'Sacred Spaces', year:'1952',
+  { id:'b3', title:"Eliza Chappel's Infant's School", year:'1952',
     bg:'#1a1a2e', fg:'#8888cc',
     chapters:[
-      {id:'bc6',title:'Stones from the World',era:'1928',
-       img:'images/1833_infants_school.jpg',
-       preview:'The chapel floor holds a stone from the Basilica of Saint Peter, Vatican City.'},
+      {id:'bc6',title:"Eliza Chappel's Infant's School",era:'1833',
+       img:'images/history/eliza_infants_school.jpg',
+       preview:`<p>This is a picture of Eliza Chappel's Infants School, which she had started in September 1833. She had about 20 pupils ranging in age from small children to 12 years. This building was previously used as a store by John Wright. The pupils were supposed to furnish their own seats and one table served as a desk for all. The teacher's table and chair was on a slightly raised platform and there was a small room which she used for her lodging. this school stood on the west and just outside the military reservation which was on S. Water St., now Wacker Dr.</p>
+<p style="font-size:0.85em;opacity:0.7"><em>Courtesy of the Plainfield Historical Society, via <a href="http://www.idaillinois.org/digital/collection/ppld01/id/294/" target="_blank" rel="noopener">Illinois Digital Archives</a></em></p>`},
     ]
   },
-  { id:'b4', title:'A History of Conscience', year:'1985',
+  { id:'b4', title:'The History of Our Church', year:'1985',
     bg:'#2a1810', fg:'#c07840',
+    source:'Source: First Presbyterian Church of Chicago, "The History of Our Church," <a href="https://www.chicagofirstchurch.org/history" target="_blank" rel="noopener">chicagofirstchurch.org/history</a>.',
     chapters:[
-      {id:'bc7',title:'The Frontier Church',era:'1833',
-       preview:'Twenty-five Congregationalists and one Presbyterian gathered in a carpentry shop at Fort Dearborn — two months before Chicago itself was incorporated.'},
-      {id:'bc8',title:'Fire and Renewal',era:'1871',
-       img:'images/1871_fire.jpg',
-       preview:'The Great Chicago Fire left the church in ashes; Pastor Arthur Mitchell rebuilt on 21st Street as the congregation pressed further south.'},
-      {id:'bc9',title:'The Move to Woodlawn',era:'1926',
-       preview:'A merger raised a new Gothic cathedral at 64th and Kimbark — membership swelled past 2,200, even as the neighborhood resisted integration.'},
-      {id:'bc10',title:'Six Months, Longer',era:'1953',
-       preview:"Elders asked Pastor Bowman to delay Black membership — he refused, and the Session voted instead to stay and invest in Woodlawn's future."},
-      {id:'bc11',title:'Buck and Chuck',era:'1956',
-       preview:'Co-pastors Blakely and Leber brought organizer Saul Alinsky into the sanctuary, turning it into a staging ground against disinvestment.'},
-      {id:'bc12',title:'Guns in the Vestry',era:'1967',
-       preview:"The Blackstone Rangers surrendered a hundred weapons to the church safe — a 2,500-page Presbytery report later cleared Pastor Fry of every charge against him."},
-      {id:'bc13',title:'New Roots',era:'1981',
-       preview:"Amid arson and abandonment, the congregation planted a garden and raised a solar greenhouse on Woodlawn's burned lots."},
+      {id:'bc7',title:'The Frontier Church',era:'1833–1860',
+       imgs:[
+         {src:'images/history/potawatomi_nation.webp',caption:'Potawatomi Nation was the First Peoples Nation in Chicago at the time First Church was founded'},
+         {src:'images/history/fort_dearborn_1831.jpg',caption:'Fort Dearborn, 1831'},
+         {src:'images/history/jeremiah_porter.webp',caption:'Jeremiah Porter'},
+         {src:'images/history/eliza_chappell_porter.webp',caption:'Eliza Emily Chappell Porter'},
+         {src:'images/history/eliza_infants_school.jpg',caption:'Eliza Chappel\'s Infant\'s School, 1833 (photographed 1934) — courtesy of the Plainfield Historical Society, via <a href="http://www.idaillinois.org/digital/collection/ppld01/id/294/" target="_blank" rel="noopener">Illinois Digital Archives</a>'},
+       ],
+       preview:`<p>The First Presbyterian Church was organized in June of 1833, two months before Chicago was incorporated. We were the first church in Chicago, and we remain the oldest continuously operating institution in this city.</p>
+<p>The church's first building was shared with the carpentry shop in Fort Dearborn. 25 Congregationalists and one Presbyterian were in the original congregation. That Presbyterian (Philo Carpenter – also Chicago's first pharmacist) convinced the assembly to adopt his denomination's affiliation and polity.</p>
+<p>The church's founding pastor, Jeremiah Porter, was a staunch abolitionist. First Church organized the first abolitionist society in Illinois, and Porter had a reputation for preaching against the evils of slavery. First was also known for its role in the local temperance movement. Its anti-alcohol meetings attracted people from all over the territory. Once, a member of the Blackhawk tribe came to a meeting at First. After listening to a speech about temperance, he surprised everyone by pulling a bottle of whiskey out of his pocket, placing it on the table, and smashing it with his tomahawk.</p>
+<p>First Church was the site of the first regional public school, founded by Eliza Emily Chappel, who later married Rev. Jeremiah. In addition to being the first public school teacher in Chicago, Chappel educated settlers in natives in joint classes, aided the wounded in the Civil War, participated in the Underground Railroad, and taught freedmen.</p>
+<p>In October, 1845, the elders of First Church rocked the Presbytery of Ottowa with a resolution denouncing slavery as a "heinous sin against God," and urging the Presbytery to be prepared to withdraw from the denomination if they refused to make a clear stand against slavery. A segment of First's congregation was very upset by this move, urging that "such matters were not in the church's province," and split to form the Second Presbyterian Church of Chicago.</p>
+<p>In the 1850s, the elder Philo Carpenter organized an "underground railroad station" which aided more than 200 runaway enslaved people. When the Fugitive Slave Law forbade aid and comfort to runaway slaves, the Session of First Church publicly resolved to disobey the law.</p>
+<p>Abolition continued to be First's primary concern until the Civil War, but it was not their only concern. Eliza Chappell's legacy could be clearly seen in their mission to education as well. In 1957, First Church founded The Railroad Chapel, a school with classrooms in converted train cars. In its first year, there were 15 students including "American, Irish, German, and colored boys." It is likely that this was the first integrated school in the area. By the end of the year, 200 more students had enrolled in the school.</p>`},
+      {id:'bc8',title:'Persistence Through Crisis',era:'1861–1899',
+       imgs:[
+         {src:'images/history/church_after_fire.webp',caption:'First Church after the Great Chicago Fire'},
+         {src:'images/history/marble_church_wabash.webp',caption:'First Church occupied Marble Church on Wabash until the Great Chicago Fire'},
+         {src:'images/history/parliament_delegates_1893.webp',caption:'Delegates at the Parliament of World Religions, 1893'},
+       ],
+       preview:`<p>Zepheniah Moore Humphrey, First Church's fourth pastor, guided the church through the crisis of the Civil War. During his pastorate, Moore's second cousin John Brown led his famous rebellion at Harper's Ferry. Moore was just as radical as his cousin, though his tactics were described as more "gentle and refined." He focused on the spiritual dimension of the national division.</p>
+<p>Humphrey was succeeded by Arthur Mitchell, who pastored the church through the Great Chicago Fire of 1871. The fire destroyed the church and the Railroad Chapel, as well as the homes and businesses of many members. The congregation built its fifth church on 21st Street, continuing its trend of moving further into the south of the city.</p>
+<p>Following the Great Fire, Chicago went on an economic binge that climaxed in 1893 with the World's Fair. First's sixth Pastor, John Henry Barrows, organized the first Parliament of the World's Religions. This was a conference to foster dialogue among leaders of the world's faiths. Delegates included prominent Jainists, Buddhists, Muslims, Hindus, Bahá'í, and Spiritualists. The Parliaments continue to this day and are a model for progressive interfaith dialogue. There is some irony that Barrows has this legacy of fostering pluralism, as he was an avowed Christian supremacist and intended the Parliament to prove that Christianity was "the best religion," because it contains "all that is true in all the faiths."</p>
+<p>As pastor, Barrows focused First Church's mission on outreach to immigrants and foreigners living in Chicago. So many Chinese immigrants joined First Church in 1894 that the church had to hire an interpreter to translate the service for them.</p>`},
+      {id:'bc9',title:'First Church in Woodlawn',era:'1926–1955',
+       imgs:[
+         {src:'images/history/harold_bowman.webp',caption:'Harold Leonard Bowman'},
+         {src:'images/history/hansberry_decision_headline.jpg',caption:'The Hansberry Decision was one factor that changed the racial makeup of Woodlawn in the 1940s and 50s'},
+         {src:'images/history/young_members_rehearsing.webp',caption:'Young members of First Church rehearsing in the mid-1950s'},
+       ],
+       preview:`<p>In the first third of the 20th century, First Church was preoccupied with a number of mergers with other churches that continued the church's gradual move southward. In 1926, First merged with Woodlawn Park Presbyterian Church, and a new American Gothic cathedral was built at 64th and Kimbark Avenue, in the heart of Woodlawn. This is still the building where First Church meets nearly a century later. In its heyday, First Church was a preeminent society church for Chicago with its own publishing operation and a membership that exceeded 2,200.</p>
+<p>However, First Church's move to Woodlawn had complicated intentions. Though the church had retained a significant Asian-American membership, it resolutely would not admit Black members. The move to Woodlawn (at that time a white community) was probably part of the larger trend of white flight from the urban centers where demographics were rapidly shifting. The church's benevolence extended to European refugees escaping political oppression, but many members balked at the Black refugees escaping Jim Crow who were arriving in the early waves of the Great Migration.</p>
+<p>After World War II, federal housing policies encouraged property owners in South Side to divide apartments into smaller units to accommodate war-time population pressures. This drove down housing costs and allowed families with lower incomes to move into the area. First Church's pastor, Harold Leonard Bowman, sensed the imminence of a racial change in Woodlawn and began preaching and teaching to prepare the congregation for integration.</p>
+<p>In spite of the church's record of radicalism on issues of racial justice, there was significant resistance to integration. Some elders on Session felt that the acceptance of "colored members" should be delayed "six months or longer, pending further education of the congregation." Bowman strongly rejected this half-measure. A faction of members openly called the church to flee the "destructive influences of the community" and move further south into the suburbs.</p>
+<p>Despite these currents of covert and explicit racism in the church, Session voted in 1953 that the church should remain in Woodlawn and invest in the future of the community and the people who were moving there. That year, the first Black member was receive into First Church, and by 1956 the congregation had a significant Black membership. The church faced consequences for its decision – by 1957, half of the congregation had left, taking much of the church's resources with them.</p>`},
+      {id:'bc10',title:'The Return to Radicalism',era:'1956–1964',
+       imgs:[
+         {src:'images/history/woodlawn_revolt_headline.jpg',caption:'Woodlawn: A Community in Revolt'},
+         {src:'images/history/bowman_blakely_leber.webp',caption:'Bowman, Blakely, and Leber'},
+         {src:'images/history/dilapidated_woodlawn_housing.jpg',caption:'Dilapidated Woodlawn housing in the 1960s'},
+       ],
+       preview:`<p>In 1956, three years after accepting its first Black member, First Church called an interracial team of co-pastors, Ulysses B. Blakely and Charles T. Leber, known to the community as "Buck and Chuck."</p>
+<p>Community morale was low. Investors had abandoned the neighborhood, and many believed it was inevitable that Woodlawn would be bulldozed to make way for the expansion of the University of Chicago. Blakely and Leber collaborated with other local clergy to organize the community for action. They invited Saul Alinsky and his Industrial Areas Foundation into the community. With generous grants from the Presbytery of Chicago and a Roman Catholic foundation, Alinsky launched the Temporary Woodlawn Organization in 1960.</p>
+<p>Alinsky frequently led community meetings at First Church, which made the church a target of bitter controversy. Many members left in protest, stating that such an "overtly political" move was outside the church's proper sphere of activity. The University of Chicago's publication Maroon blared, "Church Supports Hate Group!" and the Christian Century magazine branded the project as a Catholic conspiracy to maintain a segregated neighborhood. Blakely and Leber remained committed to their approach in the face of this opposition. The Woodlawn Organization still exists today, and it has been an important base for organizing and mobilizing the power of Woodlawn residents.</p>
+<p>First Church remained on the front lines of community action after Blakely and Leber left. Harold Walker, an interim pastor, wrote: "As in the past, First Church had again found her place in the midst of the struggle for human dignity and at the heart of the city's life."</p>`},
+      {id:'bc11',title:'First Church on the Front Lines',era:'1965–1972',
+       imgs:[
+         {src:'images/history/opportunity_please_knock_chorus.jpg',caption:'Opportunity Please Knock Chorus'},
+         {src:'images/history/black_youngsters.webp',caption:'Black youngsters'},
+         {src:'images/history/ebony_magazine.webp',caption:'Ebony magazine'},
+         {src:'images/history/opportunity_please_knock.jpg',caption:'Opportunity, Please Knock'},
+         {src:'images/history/s-l300.webp',caption:'Opportunity, Please Knock — original cast recording'},
+       ],
+       preview:`<p>First Church's mission in the following years was defined by striving "to be a witness for human brotherhood against racism and violence; to be an advocate of self-determination for all oppressed people, and to expose and resist repression." In 1965, this mission led to engagement with the major youth gang in Woodlawn, called the Black P Stone Nation. The SCLC (the civil rights group founded by Martin Luther King Jr.) had assigned staff to work with the Rangers and attempt to involve them in the Civil Rights movement.</p>
+<p>First Church's new pastor, John Fry, shared this view. He and the church saw the Rangers as an indigenous, well-organized source of Black power for the South Side of Chicago. They observed that the Rangers' violent tactics were increasing in proportion to the repressive tactics of the police. As a result, the church decided to devote resources to buffer the organization and urge its leaders to fulfill their responsibility to the community at large.</p>
+<p>The program was controversial but had numerous positive effects. The Rangers surrendered more than 100 weapons to the church in the presence of police and Treasury Department agents, which were placed in the church's walk-in safe. The Rangers met in the church's third-floor gym and the church secured federal War on Poverty funds to pay Rangers for organizing the community.</p>
+<p>The Rangers apparently took their call to build and protect their community very seriously. They maintained truces with their rivals, the Disciples. When Martin Luther King was murdered and riots sparked all around Chicago, the Rangers patrolled Woodlawn and kept violence at bay. They have also been credited with keeping drugs and sex trafficking out of Woodlawn.</p>
+<p>The partnership between First Church and the Rangers also had a creative side. In 1967, the Rangers collaborated with Oscar Brown Jr. on a groundbreaking Northern Soul musical called Opportunity, Please Knock. Eight thousand people came to First Church to see the production in its opening, and it garnered outstanding reviews in many national publications.</p>
+<p>However, Fry was also gaining a reputation for speaking out against the tactics of local police, and this led to escalating tensions. The police raided First Church, harassed the Rangers and church staff meeting there, destroyed furniture, and "discovered" the cache of weapons they had helped to establish. The raid made national news, and led to a Senate Investigation, at which Fry testified. The church was accused of harboring guns and ammunition, approving the use and distribution of narcotics, and hosting orgies. Fry was even accused of passing on a murder command. These allegations were investigated thoroughly by the Presbytery of Chicago, and Fry and the church were completely vindicated in a 2,500-page report. But the troubles continued. In 1967, a saboteur deliberately flooded the church. A year later, during the Democratic Convention in Chicago, there was a serious fire in church.</p>
+<p>Though these events had the highest visibility, First Church also used other tactics to combat local poverty during this time. The Community Education Program gave Woodlawn residents a preschool program which the community could design and steer. A Headstart program (the first in Chicago) served 120 children. A daycare center provided important support for struggling families in the neighborhood. A highly popular Sisterhood Program fostered a loving network of women who supported and mentored one another.</p>`},
+      {id:'bc12',title:"The Church's New Roots",era:'1972–1985',
+       preview:`<p>Because of First Church's reputation as a radical church, it had a hard time finding a pastor to replace John Fry. Several years passed in which the church was ably led by its well-organized congregation, in partnership with a few supply pastors. In 1974, a church member, worker, and seminary student, wrote that the absence of a full-time pastor was a "blessing in disguise" for First Church. The empowered congregation embraced their ownership of the church's mission.</p>
+<p>Arthur Smith became First Church's pastor in 1976. The landscape of Woodlawn had changed dramatically in the decade before his arrival. In a three-year period, 362 buildings in Woodlawn were reportedly destroyed by arson. The crack epidemic had a crippling effect on the neighborhood, and residents with means fled to the suburbs. This left Woodlawn with large patches of empty lots which the city was auctioning off for cheap.</p>
+<p>First Church decided to buy up some of these lots and return them to community use. Three lots on the site of a burned-down Episcopal church were bought and turned into a thriving community garden (now the 65th and Woodlawn Garden). In 1978, First Church began working with the Center for Neighborhood Technology on plans for a solar greenhouse, which was built in 1981. These projects fostered greater resilience in the community's food system and provided abundant sources of fresh produce.</p>`},
     ]
   },
 ];
 
 const MEDIA = [
-  {title:'Oral History — Mrs. E. Pulaski (1961)',
-   desc:'35-min reel-to-reel, South Chicago Historical Society. [Digitization pending]'},
-  {title:'16mm Film — Church Centennial (1933)',
-   desc:'Silent film ~8 min. Exterior procession and interior gathering. [Preservation required]'},
   {title:'Opportunity Please Knock Chorus',
    desc:'Oscar Brown Jr. & Blackstone Rangers collaboration, 1967.',
    yt:'https://www.youtube.com/watch?v=zBmmj_NFP1k&list=RDzBmmj_NFP1k&start_radio=1'},
@@ -688,13 +766,21 @@ function toggleBook(id){
   openBook=id; renderShelf();
   const book=BOOKS.find(b=>b.id===id);
   const panel=document.createElement('div'); panel.className='ch-panel';
-  panel.innerHTML=`<h4>${book.title} <span style="color:var(--ink-dim);font-size:.78em">(${book.year})</span></h4>`;
+  panel.innerHTML=`<h4>${book.title} <span style="color:var(--ink-dim);font-size:.78em">(${book.year})</span></h4>${book.source?`<div class="book-source">${book.source}</div>`:''}`;
   const reader=document.createElement('div'); reader.className='book-reader';
   book.chapters.forEach(ch=>{
     const sec=document.createElement('div'); sec.className='book-chapter';
+    let mediaHtml='';
+    if(ch.imgs && ch.imgs.length){
+      mediaHtml=`<div class="ch-gallery">${ch.imgs.map(im=>
+        `<figure><img class="ch-img" src="${im.src}" alt="${im.caption||''}">${im.caption?`<figcaption>${im.caption}</figcaption>`:''}</figure>`
+      ).join('')}</div>`;
+    } else if(ch.img){
+      mediaHtml=`<img class="ch-img" src="${ch.img}" alt="">`;
+    }
     sec.innerHTML=`<div class="ch-era">${ch.era}</div>
       <div class="ch-name">${ch.title}</div>
-      ${ch.img?`<img class="ch-img" src="${ch.img}" alt="">`:''}
+      ${mediaHtml}
       <div class="ch-body">${ch.preview}</div>`;
     reader.appendChild(sec);
   });
@@ -959,6 +1045,20 @@ function closeVideo(){
 function bgCloseVideo(e){
   if(e.target===document.getElementById('vid-overlay'))closeVideo();
 }
+
+// ═══════════════════════ LEFT PAGE FULLSCREEN ═════════════════
+function toggleFullscreen(){
+  const pl=document.getElementById('page-l');
+  const btn=document.getElementById('fs-toggle');
+  const expanded=pl.classList.toggle('expanded');
+  btn.textContent=expanded?'✕':'⛶';
+  btn.title=expanded?'Exit fullscreen':'Expand to fullscreen';
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape' && document.getElementById('page-l').classList.contains('expanded')){
+    toggleFullscreen();
+  }
+});
 
 // ═══════════════════════ TOAST ════════════════════════════════
 let _tt;
