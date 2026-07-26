@@ -396,6 +396,9 @@ html,body{width:100%;height:100vh;background:var(--bg);
   padding:20px 18px;text-align:center;
 }
 .off-cal-box .stamp-cta{margin-bottom:9px;}
+.off-cal-group{margin-bottom:9px;}
+.off-cal-group .stamp-cta{margin-bottom:5px;}
+.stamp-cta.small{padding:7px 12px;font-size:0.56rem;}
 .off-note{font-size:0.62rem;color:var(--ink-dim);opacity:0.75;margin-top:10px;line-height:1.6;}
 .off-voucher{font-size:0.68rem;color:var(--ink);text-align:center;margin-top:20px;
   font-style:italic;line-height:1.6;}
@@ -778,9 +781,19 @@ html,body{width:100%;height:100vh;background:var(--bg);
     <div class="off-stamp-grid" id="off-stamp-grid"></div>
 
     <div class="off-cal-box">
-      <a class="stamp-cta" id="off-webcal-btn" href="#" target="_blank" rel="noopener">📅 Subscribe to the Calendar</a>
-      <button class="stamp-cta secondary" onclick="copyCalendarLink()">⧉ Copy Link (for Google Calendar)</button>
-      <div class="off-note">On iPhone/Mac/Outlook, "Subscribe" opens your calendar app directly. On Google Calendar, use "Other calendars → From URL" and paste the copied link.</div>
+      <a class="stamp-cta" id="off-webcal-btn" href="#" target="_blank" rel="noopener">🍎 Apple / Mac Calendar</a>
+
+      <div class="off-cal-group">
+        <a class="stamp-cta" id="off-google-btn" href="#" target="_blank" rel="noopener">🗓 Subscribe with Google</a>
+        <button class="stamp-cta secondary small" onclick="copyCalendarLink('google')">⧉ Copy Link for Google</button>
+      </div>
+
+      <div class="off-cal-group">
+        <a class="stamp-cta" id="off-outlook-btn" href="#" target="_blank" rel="noopener">📧 Subscribe with Outlook</a>
+        <button class="stamp-cta secondary small" onclick="copyCalendarLink('outlook')">⧉ Copy Link for Outlook</button>
+      </div>
+
+      <div class="off-note">The Subscribe buttons deep-link straight into that calendar's own confirmation screen. If a popup gets blocked or you're on another app entirely (Thunderbird, etc.), use the matching "Copy Link" instead and add it manually via "From URL."</div>
     </div>
 
     <div class="off-voucher">Complete all five stamps to redeem a 10% discount voucher on First Church merchandise.</div>
@@ -868,8 +881,8 @@ html,body{width:100%;height:100vh;background:var(--bg);
 // httpsUrl is the same .ics file over https:// — needed because Google
 // Calendar's "From URL" subscribe field does not accept webcal://.
 const STAMP_CONFIG = {
-  webcalUrl: 'webcal://REPLACE-ME.web.app/fpc-week.ics',
-  httpsUrl:  'https://REPLACE-ME.web.app/fpc-week.ics'
+  webcalUrl: 'webcal://raw.githubusercontent.com/sangyufeiwan77/Memory_archive/main/fpc-week.ics',
+  httpsUrl:  'https://raw.githubusercontent.com/sangyufeiwan77/Memory_archive/main/fpc-week.ics'
 };
 
 // ═══════════════════════════ DATA ═══════════════════════════
@@ -1068,8 +1081,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   renderShelf(); renderMedia(); renderWindows();
   renderCabinet(0);
   renderOfflineStamps();
-  const webBtn=document.getElementById('off-webcal-btn');
-  if(webBtn) webBtn.href=STAMP_CONFIG.webcalUrl;
+  wireCalendarButtons();
   // Offline visitors arriving via a QR link (?mode=offline) land straight on the quest tab.
   if(new URLSearchParams(location.search).get('mode')==='offline') switchMode('offline');
 });
@@ -1400,12 +1412,34 @@ function closeStamp(){document.getElementById('stamp-overlay').classList.remove(
 function bgCloseStamp(e){
   if(e.target===document.getElementById('stamp-overlay'))closeStamp();
 }
-function copyCalendarLink(){
+function copyCalendarLink(provider){
+  const msgs={
+    google:  '⧉ Link copied — Google Calendar → Other calendars → From URL',
+    outlook: '⧉ Link copied — Outlook → Add calendar → Subscribe from web',
+  };
   navigator.clipboard.writeText(STAMP_CONFIG.httpsUrl).then(()=>{
-    showToast('⧉ Calendar link copied');
+    showToast(msgs[provider] || '⧉ Calendar link copied');
   }).catch(()=>{
     showToast('⚠ Could not copy — long-press the link to copy manually');
   });
+}
+
+// Deep links straight into each provider's own "subscribe" flow, so players
+// don't have to copy/paste anywhere. webcal:// only auto-opens a native app
+// on iOS/macOS (and Windows only if some app has registered as the handler,
+// which the new Outlook for Windows does not do reliably) — Google and
+// Outlook-web instead get URL-based deep links that pre-fill their own
+// "add calendar from URL" screen.
+function wireCalendarButtons(){
+  const apple=document.getElementById('off-webcal-btn');
+  if(apple) apple.href = STAMP_CONFIG.webcalUrl;
+
+  const google=document.getElementById('off-google-btn');
+  if(google) google.href = 'https://calendar.google.com/calendar/render?cid=' + encodeURIComponent(STAMP_CONFIG.webcalUrl);
+
+  const outlook=document.getElementById('off-outlook-btn');
+  if(outlook) outlook.href = 'https://outlook.office.com/calendar/0/addfromweb?url='
+    + encodeURIComponent(STAMP_CONFIG.webcalUrl) + '&name=' + encodeURIComponent('A Week at First Church');
 }
 
 // ═══════════════════════ MEMORY FULLSCREEN ════════════════════
