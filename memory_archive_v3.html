@@ -19,9 +19,24 @@ html,body{width:100%;height:100vh;background:var(--bg);
   display:flex;align-items:center;justify-content:center;
   overflow:hidden;font-family:'IM Fell English',serif;}
 
+/* ── APP SHELL (mode switch + stage) ── */
+.app-shell{display:flex;flex-direction:column;align-items:center;
+  width:min(1240px,99vw);height:min(800px,96vh);gap:8px;}
+.mode-tabs{flex-shrink:0;display:flex;gap:6px;}
+.mode-tab{
+  background:var(--paper3);border:1px solid var(--gold-dim);border-bottom:none;
+  color:var(--ink-dim);font-family:'Cinzel',serif;font-size:0.62rem;
+  letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;
+  padding:9px 20px;border-radius:4px 4px 0 0;transition:all var(--trans);
+}
+.mode-tab:hover{color:var(--gold);}
+.mode-tab.on{background:var(--paper);color:var(--gold);border-color:var(--gold);}
+.view-stage{flex:1;min-height:0;width:100%;display:flex;}
+
 /* ── BOOK ── */
-.book{display:flex;width:min(1240px,99vw);height:min(800px,96vh);
+.book{display:none;width:100%;height:100%;
   filter:drop-shadow(0 20px 60px rgba(0,0,0,0.9));}
+.book.on{display:flex;}
 
 /* ── TABS ── */
 .tabs{width:var(--tab-w);background:var(--spine);
@@ -299,6 +314,92 @@ html,body{width:100%;height:100vh;background:var(--bg);
   50%{box-shadow:0 0 14px rgba(200,168,75,0.35);}
 }
 
+/* ── STAMP / WEBCAL UNLOCK BUTTON ── */
+.stamp-btn{
+  background:rgba(138,58,46,0.18);border-color:#8a3a2e;color:#c98a6f;
+  animation-name:stampPulse;
+}
+.stamp-btn:hover{background:#8a3a2e;color:#f0d9c8;}
+@keyframes stampPulse{
+  0%,100%{box-shadow:0 0 0 rgba(138,58,46,0);}
+  50%{box-shadow:0 0 14px rgba(138,58,46,0.4);}
+}
+
+/* ── STAMP OVERLAY ── */
+.stamp-overlay{
+  position:fixed;inset:0;background:rgba(10,7,3,0.82);z-index:400;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity 0.3s;padding:20px;
+}
+.stamp-overlay.open{opacity:1;pointer-events:all;}
+.stamp-card{
+  width:min(94vw,420px);background:var(--paper);border:1px solid var(--gold-dim);
+  border-radius:6px;padding:26px 24px 22px;text-align:center;position:relative;
+  box-shadow:0 20px 60px rgba(0,0,0,0.6);
+}
+.stamp-seal{width:64px;height:64px;margin:0 auto 12px;}
+.stamp-title{font-family:'Cinzel',serif;font-size:0.82rem;letter-spacing:0.1em;
+  color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+.stamp-desc{font-size:0.72rem;line-height:1.6;color:var(--ink-dim);
+  font-style:italic;margin-bottom:18px;}
+.stamp-cta{
+  display:block;width:100%;padding:10px 14px;margin-bottom:9px;
+  background:var(--gold-glow);border:1px solid var(--gold);border-radius:3px;
+  color:var(--gold);font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.08em;
+  text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all var(--trans);
+  box-sizing:border-box;
+}
+.stamp-cta:hover{background:var(--gold);color:#1a1408;}
+.stamp-cta.secondary{background:none;border-color:var(--gold-dim);color:var(--ink-dim);font-size:0.58rem;}
+.stamp-cta.secondary:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-glow);}
+.stamp-note{font-size:0.6rem;color:var(--ink-dim);opacity:0.7;margin-top:12px;line-height:1.5;}
+.stamp-close{
+  position:absolute;top:10px;right:12px;background:none;border:none;
+  color:var(--ink-dim);font-size:0.9rem;cursor:pointer;
+}
+.stamp-close:hover{color:var(--gold);}
+
+/* ── OFFLINE VIEW ── */
+.offline-view{
+  display:none;width:100%;height:100%;background:var(--paper2);
+  border:3px solid #060402;border-radius:2px;overflow-y:auto;position:relative;
+}
+.offline-view.on{display:block;}
+.offline-view::before{content:'';position:absolute;top:0;left:0;width:100%;height:18px;
+  background:linear-gradient(to bottom,rgba(0,0,0,0.35),transparent);
+  pointer-events:none;z-index:2;}
+.offline-inner{max-width:640px;margin:0 auto;padding:38px 30px 48px;position:relative;z-index:1;}
+.off-title{font-family:'Cinzel Decorative',serif;font-size:0.95rem;letter-spacing:0.12em;
+  color:var(--gold);text-align:center;margin-bottom:4px;}
+.off-sub{font-size:0.72rem;color:var(--ink-dim);font-style:italic;text-align:center;margin-bottom:20px;}
+.off-intro{font-size:0.78rem;line-height:1.85;color:var(--ink);margin-bottom:26px;}
+.off-intro p{margin-bottom:12px;}
+.off-intro p:last-child{margin-bottom:0;}
+.off-section-head{font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.18em;
+  text-transform:uppercase;color:var(--gold-dim);margin-bottom:12px;
+  padding-bottom:6px;border-bottom:1px solid var(--border);}
+.off-stamp-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:26px;}
+.off-stamp{
+  background:var(--paper3);border:1px solid var(--border);border-radius:3px;
+  padding:12px 12px 11px;display:flex;gap:10px;align-items:flex-start;
+}
+.off-stamp.locked{opacity:0.6;border-style:dashed;}
+.off-stamp-icon{width:30px;height:30px;flex-shrink:0;border-radius:50%;
+  background:#8a3a2e;display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:0.62rem;color:#e8c9a0;}
+.off-stamp-body{min-width:0;}
+.off-stamp-label{font-family:'Cinzel',serif;font-size:0.64rem;color:var(--gold);
+  letter-spacing:0.04em;margin-bottom:3px;}
+.off-stamp-desc{font-size:0.64rem;color:var(--ink-dim);line-height:1.5;font-style:italic;}
+.off-cal-box{
+  background:var(--paper3);border:1px solid var(--gold-dim);border-radius:4px;
+  padding:20px 18px;text-align:center;
+}
+.off-cal-box .stamp-cta{margin-bottom:9px;}
+.off-note{font-size:0.62rem;color:var(--ink-dim);opacity:0.75;margin-top:10px;line-height:1.6;}
+.off-voucher{font-size:0.68rem;color:var(--ink);text-align:center;margin-top:20px;
+  font-style:italic;line-height:1.6;}
+
 /* ARCH — top portion, just the semicircle header */
 .arch-wrap{position:relative;flex-shrink:0;}
 .arch-svg{width:100%;display:block;}
@@ -575,7 +676,17 @@ html,body{width:100%;height:100vh;background:var(--bg);
 </head>
 <body>
 
-<div class="book">
+<div class="app-shell">
+
+  <!-- MODE SWITCH -->
+  <div class="mode-tabs">
+    <button class="mode-tab on" id="mode-tab-online" onclick="switchMode('online')">Online: The Memory Archive</button>
+    <button class="mode-tab" id="mode-tab-offline" onclick="switchMode('offline')">Offline: A Week in FPC</button>
+  </div>
+
+  <div class="view-stage">
+
+<div class="book on" id="online-view">
 
   <!-- TABS -->
   <div class="tabs">
@@ -583,6 +694,7 @@ html,body{width:100%;height:100vh;background:var(--bg);
     <button class="tab"    onclick="switchTab('exhibitions',this)">Exhibition</button>
     <button class="tab"    onclick="switchTab('media',this)">Media</button>
     <button class="debug-skip" onclick="openCollage()" title="Debug only: jump straight to the collage screen">DEBUG:&nbsp;Collage</button>
+    <button class="debug-skip" onclick="openStamp()" title="Debug only: jump straight to the stamp/webcal overlay">DEBUG:&nbsp;Stamp</button>
   </div>
 
   <!-- LEFT PAGE -->
@@ -646,10 +758,37 @@ html,body{width:100%;height:100vh;background:var(--bg);
       <div class="r-sub">First Presbyterian Church · South Chicago · Est. 1833</div>
       <div class="win-grid" id="win-grid"></div>
       <button class="collage-btn" id="collage-btn" onclick="openCollage()">✦ Piece Together the Memory ✦</button>
+      <button class="collage-btn stamp-btn" id="stamp-btn" onclick="openStamp()">✦ Claim the Stamp of History ✦</button>
     </div>
   </div>
 
 </div>
+
+<!-- OFFLINE VIEW: A Week in FPC -->
+<div class="offline-view" id="offline-view">
+  <div class="offline-inner">
+    <div class="off-title">A Week at First Church</div>
+    <div class="off-sub">The Offline Passport Quest</div>
+    <div class="off-intro">
+      <p>The archive continues beyond the screen. Every week, the church's ordinary life — its arts, its prayer, its gatherings — hides five stamps for those who come looking. Find the fixed stamp at each location, scan the QR code there for the story behind it, and fill your First Church passport.</p>
+      <p>Subscribe to the calendar below and a full week of quests appears in your own Outlook or Google Calendar — arrive on any day and you'll still see everything on offer. Unsubscribe any time once your passport is complete; nothing lingers after the game ends.</p>
+    </div>
+
+    <div class="off-section-head">The Five Stamps</div>
+    <div class="off-stamp-grid" id="off-stamp-grid"></div>
+
+    <div class="off-cal-box">
+      <a class="stamp-cta" id="off-webcal-btn" href="#" target="_blank" rel="noopener">📅 Subscribe to the Calendar</a>
+      <button class="stamp-cta secondary" onclick="copyCalendarLink()">⧉ Copy Link (for Google Calendar)</button>
+      <div class="off-note">On iPhone/Mac/Outlook, "Subscribe" opens your calendar app directly. On Google Calendar, use "Other calendars → From URL" and paste the copied link.</div>
+    </div>
+
+    <div class="off-voucher">Complete all five stamps to redeem a 10% discount voucher on First Church merchandise.</div>
+  </div>
+</div>
+
+  </div><!-- /view-stage -->
+</div><!-- /app-shell -->
 
 <!-- MEMORY FULLSCREEN OVERLAY -->
 <div class="mem-overlay" id="mem-overlay" onclick="bgClose(event)">
@@ -702,9 +841,37 @@ html,body{width:100%;height:100vh;background:var(--bg);
   </div>
 </div>
 
+<!-- STAMP / WEBCAL OVERLAY -->
+<div class="stamp-overlay" id="stamp-overlay" onclick="bgCloseStamp(event)">
+  <div class="stamp-card">
+    <button class="stamp-close" onclick="closeStamp()">✕</button>
+    <svg class="stamp-seal" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="100" cy="100" r="90" fill="#8a3a2e"/>
+      <circle cx="100" cy="100" r="90" fill="none" stroke="#5c2018" stroke-width="4"/>
+      <circle cx="100" cy="100" r="70" fill="none" stroke="#5c2018" stroke-width="2" stroke-dasharray="4 3"/>
+      <text x="100" y="112" font-family="Georgia,serif" font-size="30" fill="#e8c9a0" text-anchor="middle">FPC</text>
+    </svg>
+    <div class="stamp-title">The Stamp of History</div>
+    <div class="stamp-desc">Six fragments recovered — the archive is whole. This earns you the Stamp of History. A thread now leads beyond these walls, into <em>A Week at First Church</em>, where four more stamps are waiting.</div>
+    <button class="stamp-cta" onclick="goOfflineFromStamp()">→ Continue to A Week at First Church</button>
+    <div class="stamp-note">You can also switch tabs at the top any time — the offline quest doesn't require finishing the archive.</div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
+// ═══════════════════════════ WEBCAL / STAMP CONFIG ════════════
+// TODO: replace with the real Firebase Hosting domain once confirmed.
+// webcalUrl uses the webcal:// scheme so iOS/macOS Calendar and Outlook
+// offer a native "Subscribe" prompt on click.
+// httpsUrl is the same .ics file over https:// — needed because Google
+// Calendar's "From URL" subscribe field does not accept webcal://.
+const STAMP_CONFIG = {
+  webcalUrl: 'webcal://REPLACE-ME.web.app/fpc-week.ics',
+  httpsUrl:  'https://REPLACE-ME.web.app/fpc-week.ics'
+};
+
 // ═══════════════════════════ DATA ═══════════════════════════
 
 const WINDOWS = [
@@ -900,7 +1067,48 @@ const notebook=[];
 window.addEventListener('DOMContentLoaded',()=>{
   renderShelf(); renderMedia(); renderWindows();
   renderCabinet(0);
+  renderOfflineStamps();
+  const webBtn=document.getElementById('off-webcal-btn');
+  if(webBtn) webBtn.href=STAMP_CONFIG.webcalUrl;
+  // Offline visitors arriving via a QR link (?mode=offline) land straight on the quest tab.
+  if(new URLSearchParams(location.search).get('mode')==='offline') switchMode('offline');
 });
+
+// ═══════════════════════════ MODE SWITCH (Online / Offline) ═══
+function switchMode(mode){
+  const isOnline = mode==='online';
+  document.getElementById('online-view').classList.toggle('on', isOnline);
+  document.getElementById('offline-view').classList.toggle('on', !isOnline);
+  document.getElementById('mode-tab-online').classList.toggle('on', isOnline);
+  document.getElementById('mode-tab-offline').classList.toggle('on', !isOnline);
+}
+function goOfflineFromStamp(){
+  closeStamp();
+  switchMode('offline');
+}
+
+// ═══════════════════════════ OFFLINE STAMPS ════════════════════
+const OFFLINE_STAMPS = [
+  { label:'Ritual', desc:'Play and Pray / Lectio Bible Study', locked:false },
+  { label:'Giving', desc:'Free Food Market / Sunday Rice', locked:false },
+  { label:'Creativity', desc:'Sanctuary Concerts / Art Studio', locked:false },
+  { label:'People', desc:'Community Prayer / Community Services', locked:false },
+  { label:'History', desc:'Archive Game Easter Egg — earned by completing the online archive', locked:true },
+];
+function renderOfflineStamps(){
+  const grid=document.getElementById('off-stamp-grid'); if(!grid) return;
+  grid.innerHTML='';
+  OFFLINE_STAMPS.forEach(s=>{
+    const el=document.createElement('div');
+    el.className='off-stamp'+(s.locked?' locked':'');
+    el.innerHTML=`<div class="off-stamp-icon">${s.locked?'🔒':'✦'}</div>
+      <div class="off-stamp-body">
+        <div class="off-stamp-label">${s.label}</div>
+        <div class="off-stamp-desc">${s.desc}</div>
+      </div>`;
+    grid.appendChild(el);
+  });
+}
 
 // ═══════════════════════════ TABS ═══════════════════════════
 function switchTab(id,btn){
@@ -1176,7 +1384,28 @@ function checkAllSolved(){
       btn.classList.add('show');
       showToast('✦ All six fragments recovered — the Collage awaits');
     }
+    const sbtn=document.getElementById('stamp-btn');
+    if(sbtn && !sbtn.classList.contains('show')){
+      sbtn.classList.add('show');
+      setTimeout(()=>showToast('✦ A stamp of history awaits beyond the archive'),1400);
+    }
   }
+}
+
+// ═══════════════════════ STAMP / WEBCAL OVERLAY ════════════════
+function openStamp(){
+  document.getElementById('stamp-overlay').classList.add('open');
+}
+function closeStamp(){document.getElementById('stamp-overlay').classList.remove('open');}
+function bgCloseStamp(e){
+  if(e.target===document.getElementById('stamp-overlay'))closeStamp();
+}
+function copyCalendarLink(){
+  navigator.clipboard.writeText(STAMP_CONFIG.httpsUrl).then(()=>{
+    showToast('⧉ Calendar link copied');
+  }).catch(()=>{
+    showToast('⚠ Could not copy — long-press the link to copy manually');
+  });
 }
 
 // ═══════════════════════ MEMORY FULLSCREEN ════════════════════

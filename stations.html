@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Week at First Church — Stamp Station</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0806;--paper:#1c1710;--paper2:#221e13;--paper3:#2a2416;
+  --ink:#d4c9a8;--ink-dim:#7a6e54;
+  --gold:#c8a84b;--gold-dim:#6b5a28;--gold-glow:rgba(200,168,75,0.12);
+  --border:rgba(200,168,75,0.18);
+}
+html,body{min-height:100vh;background:var(--bg);font-family:'IM Fell English',serif;color:var(--ink);}
+body{display:flex;align-items:center;justify-content:center;padding:24px;}
+.card{
+  width:100%;max-width:440px;background:var(--paper);border:1px solid var(--border);
+  border-radius:6px;padding:30px 26px 28px;box-shadow:0 20px 60px rgba(0,0,0,0.6);
+  position:relative;
+}
+.badge{
+  display:inline-block;font-family:'Cinzel',serif;font-size:0.56rem;letter-spacing:0.16em;
+  text-transform:uppercase;color:var(--gold-dim);border:1px solid var(--gold-dim);
+  border-radius:2px;padding:4px 10px;margin-bottom:14px;
+}
+h1{font-family:'Cinzel Decorative',serif;font-size:1.05rem;letter-spacing:0.05em;
+  color:var(--gold);margin-bottom:6px;line-height:1.4;}
+.meta{font-size:0.72rem;color:var(--ink-dim);font-style:italic;margin-bottom:18px;}
+.desc{font-size:0.82rem;line-height:1.85;margin-bottom:22px;}
+.desc p{margin-bottom:12px;}
+.desc p:last-child{margin-bottom:0;}
+.cta{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:13px 14px;margin-bottom:10px;
+  background:var(--gold-glow);border:1px solid var(--gold);border-radius:3px;
+  color:var(--gold);font-family:'Cinzel',serif;font-size:0.68rem;letter-spacing:0.08em;
+  text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all 0.25s;
+  box-sizing:border-box;
+}
+.cta:hover{background:var(--gold);color:#1a1408;}
+.cta .num{font-family:'IM Fell English',serif;letter-spacing:0.02em;text-transform:none;font-size:0.85rem;}
+.link-line{font-size:0.68rem;color:var(--ink-dim);text-align:center;margin-top:14px;}
+.link-line a{color:var(--gold-dim);}
+.link-line a:hover{color:var(--gold);}
+.notfound{font-style:italic;color:var(--ink-dim);text-align:center;padding:40px 10px;}
+</style>
+</head>
+<body>
+<div class="card" id="card"></div>
+
+<script>
+// ═══════════════════ STATION DATA ═══════════════════
+// One entry per physical stamp. Linked to from the QR code posted at
+// each station. Open with ?id=<key>, e.g. stations.html?id=giving-food-market
+const STATIONS = {
+  'ritual-play-pray': {
+    category: 'Ritual', title: 'Play and Pray',
+    meta: 'Sunday · 9:00 AM – 10:50 AM · Sanctuary',
+    desc: [
+      "It's time for a gathering with all. Stop by the sanctuary for a worship session, and walk through the corridor to have a glance at the upcoming events — there you'll find a collection."
+    ]
+  },
+  'ritual-bible-study': {
+    category: 'Ritual', title: 'Lectio Bible Study',
+    meta: 'Tuesday · 4:00 PM – 5:00 PM · Small Chapel, 1st Floor (also on Zoom)',
+    desc: [
+      "If you'd like a quiet place for studying, visit the small chapel on the first floor. After completing your studies, you might want to play some music — not the organ, but something smaller in the chapel.",
+      "Joining remotely instead? The study is also on Zoom."
+    ],
+    cta: { label: 'Join on Zoom', href: 'https://us02web.zoom.us/j/7733630505' }
+  },
+  'giving-food-market': {
+    category: 'Giving', title: 'Free Food Market',
+    meta: 'Thursday · 8:00 AM – 1:00 PM · John Knox Hall',
+    desc: [
+      "The Free Food Market runs Thursday mornings in John Knox Hall — open to anyone in the community.",
+      "Need food outside pantry hours? Call the line below."
+    ],
+    cta: { label: 'Call the Pantry Line', href: 'tel:7732473663', num: '773-247-3663' },
+    link: { label: 'More about the Free Food Market', href: 'https://www.chicagofirstchurch.org/overall-calendar-1/-free-food-market' }
+  },
+  'giving-sunday-rice': {
+    category: 'Giving', title: 'Sunday Rice',
+    meta: 'Sunday · 1:00 PM · 1st Floor Porter Room',
+    desc: [
+      "Under the curly stain on the glass, there is a box with a passcode. Find what remains unchanged for all our gatherings!"
+    ],
+    link: { label: 'About Sunday Rice', href: 'https://www.chicagofirstchurch.org/sunday-rice' }
+  },
+  'creativity-concert': {
+    category: 'Creativity', title: 'Sanctuary Concert',
+    meta: 'Friday · 7:00 PM – 9:00 PM · Venue: find it',
+    desc: [
+      "This is a concert invite without a specific venue. Consult the past events archive and find the venue with the most likelihood. A reward is hidden on stage where the light is always projected — like it never fades."
+    ],
+    link: { label: 'Past cultural events archive', href: 'https://drive.google.com/file/d/13cYnlvNiP992l5UvTzpCGj_ohcJJVwVw/view?usp=sharing' }
+  },
+  'creativity-art-studio': {
+    category: 'Creativity', title: 'Art Studio',
+    meta: 'Saturday · 3:00 PM – 4:30 PM · 2nd or 3rd Floor Artist Studio',
+    desc: [
+      "Visit one of the artist studios on the second or third floor, and ask them: \"Have you found any fragments today?\""
+    ],
+    link: { label: 'About the mini-residency', href: 'https://www.chicagofirstchurch.org/mini-residency-form' }
+  },
+  'people-wedding': {
+    category: 'People', title: 'A Wedding',
+    meta: 'Every Friday · 12:00 PM – 5:00 PM',
+    desc: [
+      "The wedding ceremony is still in the midst of preparation, but something important was left behind the curtain. Find the wedding reference in the event list, and investigate where the lost item hides."
+    ],
+    link: { label: 'Event list', href: 'https://drive.google.com/file/d/13cYnlvNiP992l5UvTzpCGj_ohcJJVwVw/view?usp=sharing' }
+  },
+};
+
+function render(){
+  const id = new URLSearchParams(location.search).get('id');
+  const s = STATIONS[id];
+  const card = document.getElementById('card');
+  if(!s){
+    card.innerHTML = `<div class="notfound">✦ No station found for this code.<br>Check the QR code and try again.</div>`;
+    return;
+  }
+  card.innerHTML = `
+    <div class="badge">${s.category}</div>
+    <h1>${s.title}</h1>
+    <div class="meta">${s.meta}</div>
+    <div class="desc">${s.desc.map(p=>`<p>${p}</p>`).join('')}</div>
+    ${s.cta ? `<a class="cta" href="${s.cta.href}">📞 ${s.cta.label}${s.cta.num ? ` — <span class="num">${s.cta.num}</span>`:''}</a>` : ''}
+    ${s.link ? `<div class="link-line"><a href="${s.link.href}" target="_blank" rel="noopener">${s.link.label} →</a></div>` : ''}
+  `;
+}
+render();
+</script>
+</body>
+</html>

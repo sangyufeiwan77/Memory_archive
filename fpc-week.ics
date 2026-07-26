@@ -1,0 +1,112 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//The Memory Archive//A Week at First Church//EN
+CALSCALE:GREGORIAN
+X-WR-CALNAME:A Week at First Church
+X-WR-TIMEZONE:America/Chicago
+BEGIN:VTIMEZONE
+TZID:America/Chicago
+X-LIC-LOCATION:America/Chicago
+BEGIN:DAYLIGHT
+TZOFFSETFROM:-0600
+TZOFFSETTO:-0500
+TZNAME:CDT
+DTSTART:19700308T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:-0500
+TZOFFSETTO:-0600
+TZNAME:CST
+DTSTART:19701101T020000
+RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:ritual-play-pray@fpc-memory-archive
+DTSTAMP:20260726T221315Z
+DTSTART;TZID=America/Chicago:20260726T090000
+DTEND;TZID=America/Chicago:20260726T105000
+RRULE:FREQ=WEEKLY;BYDAY=SU
+SUMMARY:Ritual — Play and Pray
+LOCATION:Sanctuary
+DESCRIPTION:It's time for a gathering with all. Stop by the sanctuary for a
+  worship session\, and walk through the corridor to have a glance at the u
+ pcoming events — there you'll find a collection.
+END:VEVENT
+BEGIN:VEVENT
+UID:ritual-bible-study@fpc-memory-archive
+DTSTAMP:20260726T221315Z
+DTSTART;TZID=America/Chicago:20260728T160000
+DTEND;TZID=America/Chicago:20260728T170000
+RRULE:FREQ=WEEKLY;BYDAY=TU
+SUMMARY:Ritual — Lectio Bible Study
+LOCATION:Small Chapel\, 1st Floor — or on Zoom
+DESCRIPTION:Accessible via Zoom: https://us02web.zoom.us/j/7733630505 — If 
+ you'd like a quiet place for studying\, visit the small chapel on the firs
+ t floor. After completing your studies\, you might want to play some music
+  — not the organ\, but something smaller in the chapel.
+END:VEVENT
+BEGIN:VEVENT
+UID:giving-free-food-market@fpc-memory-archive
+DTSTAMP:20260726T221315Z
+DTSTART;TZID=America/Chicago:20260730T080000
+DTEND;TZID=America/Chicago:20260730T130000
+RRULE:FREQ=WEEKLY;BYDAY=TH
+SUMMARY:Giving — Free Food Market
+LOCATION:John Knox Hall
+DESCRIPTION:See more at: https://www.chicagofirstchurch.org/overall-calenda
+ r-1/-free-food-market — Call 773-247-3663 if you need immediate access to 
+ food outside pantry hours.
+END:VEVENT
+BEGIN:VEVENT
+UID:giving-sunday-rice@fpc-memory-archive
+DTSTAMP:20260726T221315Z
+DTSTART;TZID=America/Chicago:20260726T130000
+DTEND;TZID=America/Chicago:20260726T150000
+RRULE:FREQ=WEEKLY;BYDAY=SU
+SUMMARY:Giving — Sunday Rice
+LOCATION:1st Floor Porter Room
+DESCRIPTION:Details: https://www.chicagofirstchurch.org/sunday-rice — Under
+  the curly stain on the glass\, there is a box with a passcode. Find what 
+ remains unchanged for all our gatherings!
+END:VEVENT
+BEGIN:VEVENT
+UID:creativity-concert@fpc-memory-archive
+DTSTAMP:20260726T221315Z
+DTSTART;TZID=America/Chicago:20260731T190000
+DTEND;TZID=America/Chicago:20260731T210000
+RRULE:FREQ=WEEKLY;BYDAY=FR
+SUMMARY:Creativity — Sanctuary Concert
+DESCRIPTION:This is a concert invite without a specific venue. Refer to the
+  past cultural events archive (https://drive.google.com/file/d/13cYnlvNiP9
+ 92l5UvTzpCGj_ohcJJVwVw/view?usp=sharing) and find the venue with the most 
+ likelihood. A reward is hidden on stage where the light is always projecte
+ d — like it never fades.
+END:VEVENT
+BEGIN:VEVENT
+UID:creativity-art-studio@fpc-memory-archive
+DTSTAMP:20260726T221315Z
+DTSTART;TZID=America/Chicago:20260801T150000
+DTEND;TZID=America/Chicago:20260801T163000
+RRULE:FREQ=WEEKLY;BYDAY=SA
+SUMMARY:Creativity — Art Studio
+LOCATION:2nd or 3rd Floor — Artist Studio
+DESCRIPTION:Visit one of the artist studios on the second or third floor\, 
+ and ask them: "Have you found any fragments today?" Learn more about the m
+ ini-residency: https://www.chicagofirstchurch.org/mini-residency-form
+END:VEVENT
+BEGIN:VEVENT
+UID:people-wedding@fpc-memory-archive
+DTSTAMP:20260726T221315Z
+DTSTART;TZID=America/Chicago:20260731T120000
+DTEND;TZID=America/Chicago:20260731T170000
+RRULE:FREQ=WEEKLY;BYDAY=FR
+SUMMARY:People — A Wedding
+DESCRIPTION:The wedding ceremony is still in the midst of preparation\, but
+  something important was left behind the curtain. Find the wedding referen
+ ce in the event list (https://drive.google.com/file/d/13cYnlvNiP992l5UvTzp
+ CGj_ohcJJVwVw/view?usp=sharing)\, and investigate where the lost item hide
+ s.
+END:VEVENT
+END:VCALENDAR
