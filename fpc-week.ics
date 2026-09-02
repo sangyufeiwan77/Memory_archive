@@ -24,11 +24,11 @@ END:STANDARD
 END:VTIMEZONE
 BEGIN:VEVENT
 UID:ritual-play-pray@fpc-memory-archive
-DTSTAMP:20260726T221315Z
+DTSTAMP:20260731T151917Z
 DTSTART;TZID=America/Chicago:20260726T090000
 DTEND;TZID=America/Chicago:20260726T105000
 RRULE:FREQ=WEEKLY;BYDAY=SU
-SUMMARY:Ritual — Play and Pray
+SUMMARY:Faith — Play and Pray
 LOCATION:Sanctuary
 DESCRIPTION:It's time for a gathering with all. Stop by the sanctuary for a
   worship session\, and walk through the corridor to have a glance at the u
@@ -36,11 +36,11 @@ DESCRIPTION:It's time for a gathering with all. Stop by the sanctuary for a
 END:VEVENT
 BEGIN:VEVENT
 UID:ritual-bible-study@fpc-memory-archive
-DTSTAMP:20260726T221315Z
+DTSTAMP:20260731T151917Z
 DTSTART;TZID=America/Chicago:20260728T160000
 DTEND;TZID=America/Chicago:20260728T170000
 RRULE:FREQ=WEEKLY;BYDAY=TU
-SUMMARY:Ritual — Lectio Bible Study
+SUMMARY:Faith — Lectio Bible Study
 LOCATION:Small Chapel\, 1st Floor — or on Zoom
 DESCRIPTION:Accessible via Zoom: https://us02web.zoom.us/j/7733630505 — If 
  you'd like a quiet place for studying\, visit the small chapel on the firs
@@ -49,7 +49,7 @@ DESCRIPTION:Accessible via Zoom: https://us02web.zoom.us/j/7733630505 — If
 END:VEVENT
 BEGIN:VEVENT
 UID:giving-free-food-market@fpc-memory-archive
-DTSTAMP:20260726T221315Z
+DTSTAMP:20260731T151917Z
 DTSTART;TZID=America/Chicago:20260730T080000
 DTEND;TZID=America/Chicago:20260730T130000
 RRULE:FREQ=WEEKLY;BYDAY=TH
@@ -61,7 +61,7 @@ DESCRIPTION:See more at: https://www.chicagofirstchurch.org/overall-calenda
 END:VEVENT
 BEGIN:VEVENT
 UID:giving-sunday-rice@fpc-memory-archive
-DTSTAMP:20260726T221315Z
+DTSTAMP:20260731T151917Z
 DTSTART;TZID=America/Chicago:20260726T130000
 DTEND;TZID=America/Chicago:20260726T150000
 RRULE:FREQ=WEEKLY;BYDAY=SU
@@ -73,7 +73,7 @@ DESCRIPTION:Details: https://www.chicagofirstchurch.org/sunday-rice — Under
 END:VEVENT
 BEGIN:VEVENT
 UID:creativity-concert@fpc-memory-archive
-DTSTAMP:20260726T221315Z
+DTSTAMP:20260731T151917Z
 DTSTART;TZID=America/Chicago:20260731T190000
 DTEND;TZID=America/Chicago:20260731T210000
 RRULE:FREQ=WEEKLY;BYDAY=FR
@@ -86,19 +86,18 @@ DESCRIPTION:This is a concert invite without a specific venue. Refer to the
 END:VEVENT
 BEGIN:VEVENT
 UID:creativity-art-studio@fpc-memory-archive
-DTSTAMP:20260726T221315Z
+DTSTAMP:20260731T151917Z
 DTSTART;TZID=America/Chicago:20260801T150000
 DTEND;TZID=America/Chicago:20260801T163000
 RRULE:FREQ=WEEKLY;BYDAY=SA
 SUMMARY:Creativity — Art Studio
-LOCATION:2nd or 3rd Floor — Artist Studio
-DESCRIPTION:Visit one of the artist studios on the second or third floor\, 
- and ask them: "Have you found any fragments today?" Learn more about the m
- ini-residency: https://www.chicagofirstchurch.org/mini-residency-form
+LOCATION:2nd or 3rd Floor — Gallery
+DESCRIPTION:Head up to the gallery on the second or third floor and look ar
+ ound — a clue is hidden among the art.
 END:VEVENT
 BEGIN:VEVENT
 UID:people-wedding@fpc-memory-archive
-DTSTAMP:20260726T221315Z
+DTSTAMP:20260731T151917Z
 DTSTART;TZID=America/Chicago:20260731T120000
 DTEND;TZID=America/Chicago:20260731T170000
 RRULE:FREQ=WEEKLY;BYDAY=FR
