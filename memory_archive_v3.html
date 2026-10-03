@@ -31,6 +31,22 @@ html,body{width:100%;height:100vh;background:var(--bg);
 }
 .mode-tab:hover{color:var(--gold);}
 .mode-tab.on{background:var(--paper);color:var(--gold);border-color:var(--gold);}
+
+/* ── PROTOTYPE CONTENT NOTICE ── */
+.proto-notice{
+  flex-shrink:0;width:100%;position:relative;box-sizing:border-box;
+  background:#3a2a10;border:1px dashed #b08a3a;border-radius:3px;
+  color:#e8c97a;font-family:'IM Fell English',serif;font-size:0.68rem;
+  line-height:1.5;padding:8px 36px 8px 14px;
+}
+.proto-notice strong{color:#f3dca0;}
+.proto-notice .proto-close{
+  position:absolute;top:4px;right:6px;background:none;border:none;
+  color:#e8c97a;font-size:0.85rem;cursor:pointer;padding:4px 8px;
+}
+.proto-notice .proto-close:hover{color:#fff;}
+.proto-notice.hidden{display:none;}
+
 .view-stage{flex:1;min-height:0;width:100%;display:flex;}
 
 /* ── BOOK ── */
@@ -685,6 +701,11 @@ html,body{width:100%;height:100vh;background:var(--bg);
   <div class="mode-tabs">
     <button class="mode-tab on" id="mode-tab-online" onclick="switchMode('online')">Online: The Memory Archive</button>
     <button class="mode-tab" id="mode-tab-offline" onclick="switchMode('offline')">Offline: A Week in FPC</button>
+  </div>
+
+  <div class="proto-notice" id="proto-notice">
+    <strong>Prototype content notice:</strong> the historical narrative text throughout this archive — book chapters, exhibition case labels, media descriptions — is placeholder: a mix of direct excerpts from existing sources (cited where used) and invented flavor text, assembled here to demonstrate the format. Before this goes public, the next author should replace it with original narrative, independently researched and written.
+    <button class="proto-close" onclick="document.getElementById('proto-notice').classList.add('hidden')" title="Dismiss">✕</button>
   </div>
 
   <div class="view-stage">
